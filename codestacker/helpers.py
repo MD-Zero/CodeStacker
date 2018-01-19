@@ -5,18 +5,29 @@
 Helper functions.
 """
 
-WITHOUT_EXCEPTION = '[ERROR] {}'
-WITH_EXCEPTION = '[ERROR] {} --'
-
 def print_and_die(message, exception=None):
     """
     Print a message (and associated error, if provided), then quit the program.
     """
     import sys
 
-    if exception is None:
-        print(WITHOUT_EXCEPTION.format(message))
-    else:
-        print(WITH_EXCEPTION.format(message), exception)
+    print(red('[ERROR] {}'.format(message)))
+
+    if exception is not None:
+        print(exception)
 
     sys.exit()
+
+
+def green(message):
+    """
+    Color the input in green, for terminal printing.
+    """
+    return '{}{}{}'.format('\033[92m', message, '\033[0m')
+
+
+def red(message):
+    """
+    Color the input in red, for terminal printing.
+    """
+    return '{}{}{}'.format('\033[91m', message, '\033[0m')
