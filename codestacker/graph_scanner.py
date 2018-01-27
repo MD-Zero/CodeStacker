@@ -43,3 +43,30 @@ def go_down_and_check_cycle(visited_nodes, children, graph, dead_ends):
         dead_ends.add(visited_nodes.pop())
 
     return True
+
+####################################################################################################
+
+def get_topological_ordering(graph):
+    """
+    Given a directed graph in input, return the topological ordering of its nodes.
+    """
+    import copy
+
+    topological_ordering = []
+    altered_graph = copy.deepcopy(graph)
+
+    while altered_graph:
+        for node, children in graph.items():
+            for child in children:
+                if child not in graph:
+                    if child not in topological_ordering:
+                        topological_ordering.append(child)
+
+                    altered_graph[node].discard(child)
+
+                    if not altered_graph[node]:
+                        altered_graph.pop(node)
+
+        graph = copy.deepcopy(altered_graph)
+
+    return topological_ordering
