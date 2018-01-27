@@ -5,41 +5,41 @@
 Directed graph scanning utilities.
 """
 
-def check_cyclicity(graph):
+def is_directed_acyclic_graph(graph):
     """
-    Given a directed graph, visit it looking for a cycle.
+    Check whether the input graph is a DAG (Directed Acyclic Graph).
     """
-    is_cyclic = False
+    is_acyclic = True
     dead_ends = set()
 
     for node, children in graph.items():
         if node in dead_ends:
             continue
 
-        if scan_graph([node], children, graph, dead_ends):
-            is_cyclic = True
+        if not go_down_and_check_cycle([node], children, graph, dead_ends):
+            is_acyclic = False
             break
 
-    return is_cyclic
+    return is_acyclic
 
 ####################################################################################################
 
-def scan_graph(visited_nodes, children, graph, dead_ends):
+def go_down_and_check_cycle(visited_nodes, children, graph, dead_ends):
     """
-    Given a starting node, visit all its children and descendants, looking for a cycle.
+    Given a start node, visit all its descendants, looking for a cycle.
     """
     for node in children:
-        if node not in graph or node in dead_ends:
+        if (node not in graph) or (node in dead_ends):
             continue
 
         if node in visited_nodes:
-            return True
-        else:
-            visited_nodes.append(node)
+            return False
 
-            if scan_graph(visited_nodes, graph[node], graph, dead_ends):
-                return True
+        visited_nodes.append(node)
 
-            dead_ends.add(visited_nodes.pop())
+        if not go_down_and_check_cycle(visited_nodes, graph[node], graph, dead_ends):
+            return False
 
-    return False
+        dead_ends.add(visited_nodes.pop())
+
+    return True
