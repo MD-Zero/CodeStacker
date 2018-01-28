@@ -2,10 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-Set of keys
+Keys from configuration files.
 """
 
-KEY_PROJECT_NAME = 'project_name'
-KEY_PLAN = 'plan'
-KEY_DIR_INCLUDE = 'dir_include'
-KEY_DIR_SOURCE = 'dir_source'
+class Keys:
+    """
+    Simple keys container.
+    """
+    COMPILER_OPTIONS = 'compiler_options'
+    DIR_INCLUDE = 'dir_include'
+    DIR_SOURCE = 'dir_source'
+    OUTPUT = 'output'
+    PROFILE = 'profile'
