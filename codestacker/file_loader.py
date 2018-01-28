@@ -13,14 +13,17 @@ def load_yaml(file):
 
     from .helpers import print_and_die
 
-    yaml_content = None
+    config = None
 
     try:
-        with open(file, 'r') as yaml_file:
-            yaml_content = yaml.safe_load(yaml_file)
+        with open(file, 'r') as stream:
+            config = list(yaml.safe_load_all(stream))
     except IOError as error:
         print_and_die('File I/O', error)
     except yaml.YAMLError as error:
         print_and_die('YAML parsing error', error)
-    else:
-        return yaml_content
+
+    if config is None:
+        print_and_die('Empty configuration file')
+
+    return config
