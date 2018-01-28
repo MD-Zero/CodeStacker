@@ -31,8 +31,8 @@ def check_required_keys(profile):
     """
     Perform different checks regarding the profile's keys.
     """
-    from .keys    import Keys
-    from .helpers import print_and_die
+    from .constants import Keys
+    from .helpers   import print_and_die
 
     if Keys.PROFILE not in profile:
         print_and_die(ERROR_PROFILE)
@@ -58,6 +58,7 @@ def check_keys_type():
 
 ####################################################################################################
 
+ERROR_CYCLE = 'Profile "{}" has cyclic variable reference(s): please fix it.'
 ERROR_MISSING_VAR = 'Variable "{}" in profile "{}" is undefined.'
 ERROR_WRONG_TYPE = 'Variable "{}" is not of type "string".'
 
@@ -68,7 +69,7 @@ def check_vars(profile):
     """
     import re
 
-    from .keys          import Keys
+    from .constants     import Keys
     from .graph_scanner import is_directed_acyclic_graph
     from .helpers       import print_and_die
 
@@ -91,8 +92,6 @@ def check_vars(profile):
         print_and_die(ERROR_CYCLE.format(profile_name))
 
 ####################################################################################################
-
-ERROR_CYCLE = 'Profile "{}" has cyclic variable reference(s): please fix it.'
 
 def substitute_vars(profile):
     """

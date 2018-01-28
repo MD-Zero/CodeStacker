@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Keys from configuration files.
+Constants.
 """
 
 class Keys:
