@@ -5,6 +5,8 @@
 Directed graph scanning utilities.
 """
 
+####################################################################################################
+
 def is_directed_acyclic_graph(graph):
     """
     Check whether the input graph is a DAG (Directed Acyclic Graph).

@@ -5,6 +5,8 @@
 File loading utility.
 """
 
+####################################################################################################
+
 def load_yaml(file):
     """
     Read a YAML file and return its content as a dictionary--or die.
