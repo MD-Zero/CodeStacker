@@ -57,10 +57,12 @@ def get_topological_ordering(graph):
     topological_ordering = []
     altered_graph = copy.deepcopy(graph)
 
+    # The altered *should* progressively shrink in size until emptiness, hence the "while".
     while altered_graph:
         for node, children in graph.items():
             for child in children:
                 if child not in graph:
+                    # Prevent addition of duplicates.
                     if child not in topological_ordering:
                         topological_ordering.append(child)
 

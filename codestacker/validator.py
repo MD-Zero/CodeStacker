@@ -69,9 +69,9 @@ def check_vars(profile):
     """
     import re
 
-    from .constants     import Keys
-    from .graph_scanner import is_directed_acyclic_graph
-    from .helpers       import print_and_die
+    from .constants   import Keys
+    from .graph_tools import is_directed_acyclic_graph
+    from .helpers     import print_and_die
 
     profile_name = profile[Keys.PROFILE]
 
@@ -97,7 +97,7 @@ def substitute_vars(profile):
     """
     Parse the given profile and substitute variables with real values.
     """
-    from .graph_scanner import get_topological_ordering
+    from .graph_tools import get_topological_ordering
 
     ordered_vars = get_topological_ordering(get_all_vars(profile))
 
