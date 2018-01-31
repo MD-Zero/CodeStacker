@@ -13,23 +13,13 @@ def print_and_die(message, exception=None):
     """
     import sys
 
-    print(red('[ERROR] {}'.format(message)))
+    from .logger import log_error
+
+    log_error(message)
 
     if exception is not None:
         print(exception)
 
+    log_error('Script stopped.')
+
     sys.exit()
-
-
-def green(message):
-    """
-    Color the input in green, for terminal printing.
-    """
-    return '{}{}{}'.format('\033[92m', message, '\033[0m')
-
-
-def red(message):
-    """
-    Color the input in red, for terminal printing.
-    """
-    return '{}{}{}'.format('\033[91m', message, '\033[0m')
