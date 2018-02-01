@@ -14,6 +14,9 @@ def load_yaml(file):
     import yaml
 
     from .helpers import print_and_die
+    from .logger  import log_ok, log_info
+
+    log_info('>>> Reading "{}" file...'.format(file))
 
     config = None
 
@@ -30,5 +33,7 @@ def load_yaml(file):
 
     if isinstance(config, dict):
         config = [config]
+
+    log_ok('<<< Success!')
 
     return config
