@@ -5,8 +5,8 @@
 Argument parsing utility.
 """
 
-DEFAULT_CONFIG_FILE = 'blueprint.yaml'
-DEFAULT_PROFILE = 'Default'
+_DEFAULT_CONFIG_FILE = 'blueprint.yaml'
+_DEFAULT_PROFILE = 'Default'
 
 ####################################################################################################
 
@@ -26,11 +26,11 @@ def parse_args():
 
     parser_build.add_argument(
         '-f', '--file',
-        default=DEFAULT_CONFIG_FILE, help='specify the configuration file to use')
+        default=_DEFAULT_CONFIG_FILE, help='specify the configuration file to use')
 
     parser_build.add_argument(
         '-p', '--profile',
-        default=DEFAULT_PROFILE, help='specify the profile to use from the configuration file')
+        default=_DEFAULT_PROFILE, help='specify the profile to use from the configuration file')
 
     # Parse the arguments.
     # May abort the script if unexpected arguments were passed.
