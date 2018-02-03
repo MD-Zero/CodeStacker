@@ -20,6 +20,6 @@ def print_and_die(message, exception=None):
     if exception is not None:
         print(exception)
 
-    log_error('Script stopped.')
+    log_error('Script stopped')
 
-    sys.exit()
+    sys.exit(1)

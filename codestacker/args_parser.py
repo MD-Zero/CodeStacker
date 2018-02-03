@@ -5,14 +5,11 @@
 Argument parsing utility.
 """
 
-_DEFAULT_CONFIG_FILE = 'blueprint.yaml'
-_DEFAULT_PROFILE = 'Default'
-
 ####################################################################################################
 
 def parse_args():
     """
-    Parse the command line's arguments.
+    Parse the command line's arguments, and return its content as a dictionary.
     """
     import argparse
     import sys
@@ -26,11 +23,11 @@ def parse_args():
 
     parser_build.add_argument(
         '-f', '--file',
-        default=_DEFAULT_CONFIG_FILE, help='specify the configuration file to use')
+        default='blueprint.yaml', help='specify the blueprint file to use')
 
     parser_build.add_argument(
-        '-p', '--profile',
-        default=_DEFAULT_PROFILE, help='specify the profile to use from the configuration file')
+        '-c', '--config',
+        default='default', help='specify the configuration to use')
 
     # Parse the arguments.
     # May abort the script if unexpected arguments were passed.
@@ -39,6 +36,6 @@ def parse_args():
     # If no arguments were provided, print only the script's usage and exit.
     if not len(sys.argv) > 1:
         parser.print_usage()
-        sys.exit()
+        sys.exit(0)
 
     return vars(args)
