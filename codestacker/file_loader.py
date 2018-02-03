@@ -16,24 +16,21 @@ def load_yaml(file):
     from .helpers import print_and_die
     from .logger  import log_ok, log_info
 
-    log_info('>>> Reading "{}" file...'.format(file))
+    log_info('>> Reading "{}" file'.format(file))
 
-    config = None
+    configs = []
 
     try:
         with open(file, 'r') as stream:
-            config = list(yaml.safe_load_all(stream))
+            configs = list(yaml.safe_load_all(stream))
     except IOError as error:
         print_and_die('File I/O:', error)
     except yaml.YAMLError as error:
         print_and_die('YAML parsing error:', error)
 
-    if config is None:
-        print_and_die('Empty configuration file!')
+    if not configs:
+        print_and_die('Empty blueprint file')
 
-    if isinstance(config, dict):
-        config = [config]
+    log_ok('<< Success')
 
-    log_ok('<<< Success!')
-
-    return config
+    return configs
