@@ -19,6 +19,7 @@ def main():
     import sys
 
     from .args_parser      import parse_args
+    from .builder          import compile_sources
     from .config_inspector import select_config, validate_config
     from .file_loader      import load_yaml
 
@@ -30,5 +31,6 @@ def main():
     config = select_config(load_yaml(filename), config_name)
 
     validate_config(os.path.dirname(filename), config)
+    compile_sources(os.path.dirname(filename), config)
 
     sys.exit(0)
