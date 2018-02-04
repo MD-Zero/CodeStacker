@@ -5,8 +5,6 @@
 YAML configuration file inspector.
 """
 
-_REGEX_VAR = r'\${(\w+)}'
-
 ####################################################################################################
 
 def select_config(configs, config_name):
@@ -38,7 +36,7 @@ _ERROR_WRONG_TYPE = 'Key "{}" is of incorrect type'
 
 def _check_keys(config):
     """
-    Perform different checks regarding the configuration keys.
+    Perform presence and type checks for the configuration keys.
     """
     from .        import constants as keys
     from .helpers import print_and_die
@@ -75,7 +73,8 @@ def _check_keys(config):
 
 def _enrich_keys(filename, config):
     """
-    Enrich the configuration with missing optional keys.
+    Enrich the configuration with missing optional keys, and normalize directories with absolute
+    paths.
     """
     import os
 
@@ -90,6 +89,8 @@ def _enrich_keys(filename, config):
         config[keys.KEY_DIR_BUILD] = os.path.join(os.path.basename(filename), 'build')
 
 ####################################################################################################
+
+_REGEX_VAR = r'\${(\w+)}'
 
 def _check_and_substitute_vars(config):
     """
@@ -121,9 +122,9 @@ def _check_and_substitute_vars(config):
 
         all_vars[key] = set(re.findall(_REGEX_VAR, value))
 
-    # Check for a DAG (Directed Acyclic Graph).
+    # Check if variables form a DAG (Directed Acyclic Graph).
     if not is_directed_acyclic_graph(all_vars):
-        print_and_die('Cyclic variable reference(s) detected')
+        print_and_die('Cyclic variable reference detected')
 
     # Based on their topological ordering, proceed with the substitutions.
     ordered_vars = get_topological_ordering(all_vars)

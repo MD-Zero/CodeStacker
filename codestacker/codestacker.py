@@ -4,7 +4,7 @@
 """
 Program flow:
     1. Parse the arguments.
-    2. Load the YAML configuration file content.
+    2. Load the YAML blueprint file content, and choose a configuration.
     3. Validate its inner structure.
     4. TODO
 """
@@ -29,6 +29,6 @@ def main():
 
     config = select_config(load_yaml(filename), config_name)
 
-    validate_config(filename, config)
+    validate_config(os.path.dirname(filename), config)
 
     sys.exit(0)
