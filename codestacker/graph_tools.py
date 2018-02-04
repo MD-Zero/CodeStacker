@@ -18,7 +18,7 @@ def is_directed_acyclic_graph(graph):
         if node in dead_ends:
             continue
 
-        if not _go_down_and_check_cycle([node], children, graph, dead_ends):
+        if _go_down_and_check_cycle([node], children, graph, dead_ends):
             is_acyclic = False
             break
 
@@ -35,9 +35,12 @@ def get_topological_ordering(graph):
     topological_ordering = []
     altered_graph = copy.deepcopy(graph)
 
-    # The altered *should* progressively shrink in size until emptiness, hence the "while".
+    # The altered graph *should* progressively shrink in size until emptiness, hence the "while".
     while altered_graph:
         for node, children in graph.items():
+            if not children:
+                altered_graph.pop(node)
+
             for child in children:
                 if child not in graph:
                     # Prevent addition of duplicates.
@@ -64,13 +67,13 @@ def _go_down_and_check_cycle(visited_nodes, children, graph, dead_ends):
             continue
 
         if node in visited_nodes:
-            return False
+            return True
 
         visited_nodes.append(node)
 
-        if not _go_down_and_check_cycle(visited_nodes, graph[node], graph, dead_ends):
-            return False
+        if _go_down_and_check_cycle(visited_nodes, graph[node], graph, dead_ends):
+            return True
 
         dead_ends.add(visited_nodes.pop())
 
-    return True
+    return False
