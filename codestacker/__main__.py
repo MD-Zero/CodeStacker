@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Script main entry point.
+Script's main entry point.
 """
 
 if __name__ == '__main__':
