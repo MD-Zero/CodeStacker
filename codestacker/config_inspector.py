@@ -12,9 +12,12 @@ def select_config(configs, config_name):
     From the configurations in input, extract the wished one.
     """
     from .helpers import print_and_die
+    from .logger  import log_info
 
     for config in configs:
         if config_name in config:
+            log_info('Found "{}" configuration'.format(config_name))
+
             return config[config_name]
 
     print_and_die('Configuration "{}" not found'.format(config_name))
@@ -25,9 +28,15 @@ def validate_config(filename, config):
     """
     Validate the correctness of the configuration in input.
     """
+    from .logger import log_info, log_ok
+
+    log_info('>> Validating configuration...')
+
     _check_keys(config)
     _enrich_keys(filename, config)
     _check_and_substitute_vars(config)
+
+    log_ok('<< Success')
 
 ####################################################################################################
 
