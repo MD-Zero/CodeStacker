@@ -24,7 +24,7 @@ def select_config(configs, config_name):
 
 ####################################################################################################
 
-def validate_config(filename, config):
+def validate_config(dir_project, config):
     """
     Validate the correctness of the configuration in input.
     """
@@ -33,7 +33,7 @@ def validate_config(filename, config):
     log_info('>> Validating configuration...')
 
     _check_keys(config)
-    _enrich_keys(filename, config)
+    _enrich_keys(dir_project, config)
     _check_and_substitute_vars(config)
 
     log_ok('<< Success')
@@ -80,7 +80,7 @@ def _check_keys(config):
 
 ####################################################################################################
 
-def _enrich_keys(filename, config):
+def _enrich_keys(dir_project, config):
     """
     Enrich the configuration with missing optional keys, and normalize directories with absolute
     paths.
@@ -89,13 +89,23 @@ def _enrich_keys(filename, config):
 
     from . import constants as keys
 
+    # "dir_include" (mandatory).
+    config[keys.KEY_DIR_INCLUDE] = os.path.join(dir_project, config[keys.KEY_DIR_INCLUDE])
+
+    # "dir_source" (mandatory).
+    config[keys.KEY_DIR_SOURCE] = os.path.join(dir_project, config[keys.KEY_DIR_SOURCE])
+
     # "dir_bin" (optional).
     if keys.KEY_DIR_BIN not in config:
-        config[keys.KEY_DIR_BIN] = os.path.join(os.path.basename(filename), 'bin')
+        config[keys.KEY_DIR_BIN] = os.path.join(dir_project, 'bin')
+    else:
+        config[keys.KEY_DIR_BIN] = os.path.join(dir_project, config[keys.KEY_DIR_BIN])
 
     # "dir_build" (optional).
     if keys.KEY_DIR_BUILD not in config:
-        config[keys.KEY_DIR_BUILD] = os.path.join(os.path.basename(filename), 'build')
+        config[keys.KEY_DIR_BUILD] = os.path.join(dir_project, 'build')
+    else:
+        config[keys.KEY_DIR_BUILD] = os.path.join(dir_project, config[keys.KEY_DIR_BUILD])
 
 ####################################################################################################
 
