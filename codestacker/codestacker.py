@@ -15,16 +15,20 @@ def main():
     """
     Script's main function.
     """
+    import os
     import sys
 
     from .args_parser      import parse_args
-    from .file_loader      import load_yaml
     from .config_inspector import select_config, validate_config
+    from .file_loader      import load_yaml
 
     options = parse_args()
 
-    config = select_config(load_yaml(options['file']), options['config'])
+    filename = os.path.realpath(options['file'])
+    config_name = options['config']
 
-    validate_config(config)
+    config = select_config(load_yaml(filename), config_name)
+
+    validate_config(filename, config)
 
     sys.exit(0)
