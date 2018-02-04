@@ -18,19 +18,19 @@ def load_yaml(file):
 
     log_info('>> Reading "{}" file'.format(file))
 
-    configs = []
+    content = []
 
     try:
         with open(file, 'r') as stream:
-            configs = list(yaml.safe_load_all(stream))
+            content = list(yaml.safe_load_all(stream))
     except IOError as error:
         print_and_die('File I/O:', error)
     except yaml.YAMLError as error:
         print_and_die('YAML parsing error:', error)
 
-    if not configs:
-        print_and_die('Empty blueprint file')
+    if not content:
+        print_and_die('Empty YAML file')
 
     log_ok('<< Success')
 
-    return configs
+    return content
