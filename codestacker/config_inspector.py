@@ -40,7 +40,7 @@ def validate_config(dir_project, config):
 
 ####################################################################################################
 
-_ERROR_NO_KEY = 'Missing mandatory "{}" key'
+_ERROR_MISSING_KEY = 'Missing mandatory "{}" key'
 _ERROR_WRONG_TYPE = 'Key "{}" is of incorrect type'
 
 def _check_keys(config):
@@ -52,21 +52,26 @@ def _check_keys(config):
 
     # "output" (mandatory).
     if keys.KEY_OUTPUT not in config:
-        print_and_die(_ERROR_NO_KEY.format(keys.KEY_OUTPUT))
+        print_and_die(_ERROR_MISSING_KEY.format(keys.KEY_OUTPUT))
     elif not isinstance(config[keys.KEY_OUTPUT], str):
         print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_OUTPUT))
 
     # "dir_include" (mandatory).
     if keys.KEY_DIR_INCLUDE not in config:
-        print_and_die(_ERROR_NO_KEY.format(keys.KEY_DIR_INCLUDE))
+        print_and_die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_INCLUDE))
     elif not isinstance(config[keys.KEY_DIR_INCLUDE], str):
         print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_INCLUDE))
 
     # "dir_source" (mandatory).
     if keys.KEY_DIR_SOURCE not in config:
-        print_and_die(_ERROR_NO_KEY.format(keys.KEY_DIR_SOURCE))
+        print_and_die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_SOURCE))
     elif not isinstance(config[keys.KEY_DIR_SOURCE], str):
         print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_SOURCE))
+
+    # "dir_bin" (optional).
+    if (keys.KEY_DIR_BIN in config) and\
+       (not isinstance(config[keys.KEY_DIR_BIN], str)):
+        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_BIN))
 
     # "compiler_options" (optional).
     if (keys.KEY_COMPILER_OPTIONS in config) and\
