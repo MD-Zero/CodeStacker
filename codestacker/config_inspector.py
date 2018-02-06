@@ -40,7 +40,7 @@ def validate_config(config):
 ####################################################################################################
 
 _ERROR_MISSING_KEY = 'Missing mandatory "{}" key'
-_ERROR_WRONG_TYPE = 'Key "{}" is of incorrect type'
+_ERROR_WRONG_TYPE = 'Key "{}" is of incorrect type (should be "{}")'
 
 def _check_keys(config):
     """
@@ -53,34 +53,39 @@ def _check_keys(config):
     if keys.KEY_OUTPUT not in config:
         print_and_die(_ERROR_MISSING_KEY.format(keys.KEY_OUTPUT))
     elif not isinstance(config[keys.KEY_OUTPUT], str):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_OUTPUT))
+        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_OUTPUT, 'string'))
 
     # "dir_include" (mandatory).
     if keys.KEY_DIR_INCLUDE not in config:
         print_and_die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_INCLUDE))
     elif not isinstance(config[keys.KEY_DIR_INCLUDE], str):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_INCLUDE))
+        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_INCLUDE, 'string'))
 
     # "dir_source" (mandatory).
     if keys.KEY_DIR_SOURCE not in config:
         print_and_die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_SOURCE))
     elif not isinstance(config[keys.KEY_DIR_SOURCE], str):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_SOURCE))
+        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_SOURCE, 'string'))
 
     # "dir_bin" (optional).
     if (keys.KEY_DIR_BIN in config) and\
        (not isinstance(config[keys.KEY_DIR_BIN], str)):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_BIN))
+        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_BIN, 'string'))
+
+    # "dir_build" (optional).
+    if (keys.KEY_DIR_BUILD in config) and\
+       (not isinstance(config[keys.KEY_DIR_BUILD], str)):
+        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_BUILD, 'string'))
 
     # "compiler_options" (optional).
     if (keys.KEY_COMPILER_OPTIONS in config) and\
-       (not isinstance(config[keys.KEY_COMPILER_OPTIONS], (str, list))):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_COMPILER_OPTIONS))
+       (not isinstance(config[keys.KEY_COMPILER_OPTIONS], list)):
+        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_COMPILER_OPTIONS, 'list'))
 
     # "libraries" (optional).
     if (keys.KEY_LIBRARIES in config) and\
-       (not isinstance(config[keys.KEY_LIBRARIES], (str, list))):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_LIBRARIES))
+       (not isinstance(config[keys.KEY_LIBRARIES], list)):
+        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_LIBRARIES, 'list'))
 
 ####################################################################################################
 
