@@ -7,7 +7,7 @@ Helper functions.
 
 ####################################################################################################
 
-def print_and_die(message, exception=None):
+def die(message, exception=None):
     """
     Print a message (and associated error, if provided), then quit the program.
     """

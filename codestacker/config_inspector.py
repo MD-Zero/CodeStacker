@@ -11,7 +11,7 @@ def select_config(configs, config_name):
     """
     From the configurations in input, extract the wished one.
     """
-    from .helpers import print_and_die
+    from .helpers import die
     from .logger  import log_info
 
     for config in configs:
@@ -20,7 +20,7 @@ def select_config(configs, config_name):
 
             return config[config_name]
 
-    print_and_die('Configuration "{}" not found'.format(config_name))
+    die('Configuration "{}" not found'.format(config_name))
 
 ####################################################################################################
 
@@ -47,45 +47,45 @@ def _check_keys(config):
     Perform presence and type checks for the configuration keys.
     """
     from .        import constants as keys
-    from .helpers import print_and_die
+    from .helpers import die
 
     # "output" (mandatory).
     if keys.KEY_OUTPUT not in config:
-        print_and_die(_ERROR_MISSING_KEY.format(keys.KEY_OUTPUT))
+        die(_ERROR_MISSING_KEY.format(keys.KEY_OUTPUT))
     elif not isinstance(config[keys.KEY_OUTPUT], str):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_OUTPUT, 'string'))
+        die(_ERROR_WRONG_TYPE.format(keys.KEY_OUTPUT, 'string'))
 
     # "dir_include" (mandatory).
     if keys.KEY_DIR_INCLUDE not in config:
-        print_and_die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_INCLUDE))
+        die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_INCLUDE))
     elif not isinstance(config[keys.KEY_DIR_INCLUDE], str):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_INCLUDE, 'string'))
+        die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_INCLUDE, 'string'))
 
     # "dir_source" (mandatory).
     if keys.KEY_DIR_SOURCE not in config:
-        print_and_die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_SOURCE))
+        die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_SOURCE))
     elif not isinstance(config[keys.KEY_DIR_SOURCE], str):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_SOURCE, 'string'))
+        die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_SOURCE, 'string'))
 
     # "dir_bin" (optional).
     if (keys.KEY_DIR_BIN in config) and\
        (not isinstance(config[keys.KEY_DIR_BIN], str)):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_BIN, 'string'))
+        die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_BIN, 'string'))
 
     # "dir_build" (optional).
     if (keys.KEY_DIR_BUILD in config) and\
        (not isinstance(config[keys.KEY_DIR_BUILD], str)):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_BUILD, 'string'))
+        die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_BUILD, 'string'))
 
     # "compiler_options" (optional).
     if (keys.KEY_COMPILER_OPTIONS in config) and\
        (not isinstance(config[keys.KEY_COMPILER_OPTIONS], list)):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_COMPILER_OPTIONS, 'list'))
+        die(_ERROR_WRONG_TYPE.format(keys.KEY_COMPILER_OPTIONS, 'list'))
 
     # "libraries" (optional).
     if (keys.KEY_LIBRARIES in config) and\
        (not isinstance(config[keys.KEY_LIBRARIES], list)):
-        print_and_die(_ERROR_WRONG_TYPE.format(keys.KEY_LIBRARIES, 'list'))
+        die(_ERROR_WRONG_TYPE.format(keys.KEY_LIBRARIES, 'list'))
 
 ####################################################################################################
 
@@ -99,7 +99,7 @@ def _check_and_substitute_vars(config):
     import re
 
     from .graph_tools import is_directed_acyclic_graph, get_topological_ordering
-    from .helpers     import print_and_die
+    from .helpers     import die
 
     # Check first variables correctness.
     for value in config.values():
@@ -108,9 +108,9 @@ def _check_and_substitute_vars(config):
 
         for var in re.findall(_REGEX_VAR, value):
             if var not in config:
-                print_and_die('Variable "{}" is undefined'.format(var))
+                die('Variable "{}" is undefined'.format(var))
             elif not isinstance(config[var], str):
-                print_and_die('Variable "{}" is not of type "string"'.format(var))
+                die('Variable "{}" is not of type "string"'.format(var))
 
     # Gather all variables in one place.
     all_vars = {}
@@ -123,7 +123,7 @@ def _check_and_substitute_vars(config):
 
     # Check if variables form a DAG (Directed Acyclic Graph).
     if not is_directed_acyclic_graph(all_vars):
-        print_and_die('Cyclic variable reference detected')
+        die('Cyclic variable reference detected')
 
     # Based on their topological ordering, proceed with the substitutions.
     ordered_vars = get_topological_ordering(all_vars)

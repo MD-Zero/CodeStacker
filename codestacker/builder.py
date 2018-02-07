@@ -26,7 +26,7 @@ def _compile(dir_root, config):
     import subprocess
 
     from .        import constants as keys
-    from .helpers import print_and_die
+    from .helpers import die
     from .logger  import log_info, log_ok
 
     _normalize_paths(dir_root, config)
@@ -50,7 +50,7 @@ def _compile(dir_root, config):
                 '-I', dir_include,
                 '-c', source])
         except subprocess.CalledProcessError:
-            print_and_die('{} compilation failed'.format(location))
+            die('{} compilation failed'.format(location))
 
     log_ok('<< Compilation successful')
 
@@ -64,7 +64,7 @@ def _link(config):
     import subprocess
 
     from .        import constants as keys
-    from .helpers import print_and_die
+    from .helpers import die
     from .logger  import log_info, log_ok
 
     os.chdir(config[keys.KEY_DIR_BIN])
@@ -76,7 +76,7 @@ def _link(config):
             'g++', '-o', config[keys.KEY_OUTPUT],
             *_get_files(config[keys.KEY_DIR_BUILD], '.o')])
     except subprocess.CalledProcessError:
-        print_and_die('Linking failed')
+        die('Linking failed')
 
     log_ok('<< Linking successful')
 
@@ -128,14 +128,13 @@ def _check_existence(dir_root, directory, should_create=False):
     """
     import os
 
-    from .helpers import print_and_die
+    from .helpers import die
 
     if not os.path.exists(directory):
         if should_create:
             os.makedirs(directory)
         else:
-            print_and_die(
-                'Directory "{}" does not exist'.format(os.path.relpath(directory, dir_root)))
+            die('Directory "{}" does not exist'.format(os.path.relpath(directory, dir_root)))
 
 ####################################################################################################
 
@@ -145,7 +144,7 @@ def _get_files(directory, extension):
     """
     import os
 
-    from .helpers import print_and_die
+    from .helpers import die
 
     all_sources = []
 
@@ -155,6 +154,6 @@ def _get_files(directory, extension):
                 all_sources.append(os.path.join(current_dir, file))
 
     if not all_sources:
-        print_and_die('No sources to compile')
+        die('No sources to compile')
 
     return all_sources

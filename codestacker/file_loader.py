@@ -13,8 +13,8 @@ def load_yaml(file):
     """
     import yaml
 
-    from .helpers import print_and_die
     from .logger  import log_ok, log_info
+    from .helpers import die
 
     log_info('>> Reading "{}" file'.format(file))
 
@@ -24,12 +24,12 @@ def load_yaml(file):
         with open(file, 'r') as stream:
             content = list(yaml.safe_load_all(stream))
     except IOError as error:
-        print_and_die('File I/O:', error)
+        die('File I/O', error)
     except yaml.YAMLError as error:
-        print_and_die('YAML parsing error:', error)
+        die('YAML loading error', error)
 
     if not content:
-        print_and_die('Empty YAML file')
+        die('Empty YAML file')
 
     log_ok('<< Success')
 
