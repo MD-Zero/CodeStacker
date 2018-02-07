@@ -1,2 +1,8 @@
 # Compiled Python.
 *.pyc
+
+# Compiled C++.
+*.o
+
+# Linking result.
+tests/bin

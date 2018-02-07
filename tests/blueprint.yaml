@@ -1,0 +1,5 @@
+default:
+  compiler_options: [-Wall, -Werror, -g, -pedantic-errors]
+  dir_include: src
+  dir_source: src
+  output: Test
