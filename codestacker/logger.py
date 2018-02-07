@@ -7,7 +7,6 @@ Logging utilities.
 
 _LOG_ERROR = '[ERROR]'
 _LOG_INFO = '[INFO ]'
-_LOG_KO = '[ KO  ]'
 _LOG_OK = '[ OK  ]'
 _LOG_WARNING = '[WARN ]'
 
@@ -32,14 +31,6 @@ def log_info(message):
     Log an information message in the terminal.
     """
     print('{}{} {}{}'.format(_COL_BLUE, _LOG_INFO, message, _COL_NONE))
-
-####################################################################################################
-
-def log_ko(message):
-    """
-    Log a "KO" message in the terminal.
-    """
-    print('{}{} {}{}'.format(_COL_RED, _LOG_KO, message, _COL_NONE))
 
 ####################################################################################################
 
