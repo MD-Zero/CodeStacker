@@ -5,45 +5,81 @@
 Logging utilities.
 """
 
-_LOG_ERROR = '[ERROR]'
-_LOG_INFO = '[INFO ]'
-_LOG_OK = '[ OK  ]'
-_LOG_WARNING = '[WARN ]'
-
-_COL_BLUE = '\033[94m'
-_COL_GREEN = '\033[92m'
-_COL_NONE = '\033[0m'
-_COL_RED = '\033[91m'
-_COL_YELLOW = '\033[93m'
+_FG_DEFAULT = '\033[39m'
+_BG_DEFAULT = '\033[49m'
 
 ####################################################################################################
 
 def log_error(message):
     """
-    Log an error message in the terminal.
+    Log an error message in the terminal, in red.
     """
-    print('{}{} {}{}'.format(_COL_RED, _LOG_ERROR, message, _COL_NONE))
+    red = '\033[31m'
 
-####################################################################################################
-
-def log_info(message):
-    """
-    Log an information message in the terminal.
-    """
-    print('{}{} {}{}'.format(_COL_BLUE, _LOG_INFO, message, _COL_NONE))
-
-####################################################################################################
-
-def log_ok(message):
-    """
-    Log an "OK" message in the terminal.
-    """
-    print('{}{} {}{}'.format(_COL_GREEN, _LOG_OK, message, _COL_NONE))
+    _log_label(red, 'ERROR')
+    _log_message(red, message)
 
 ####################################################################################################
 
 def log_warning(message):
     """
-    Log a warning message in the terminal.
+    Log a warning message in the terminal, in yellow.
     """
-    print('{}{} {}{}'.format(_COL_YELLOW, _LOG_WARNING, message, _COL_NONE))
+    yellow = '\033[33m'
+
+    _log_label(yellow, 'WARN ')
+    _log_message(yellow, message)
+
+####################################################################################################
+
+def log_info(message):
+    """
+    Log an information message in the terminal, in blue.
+    """
+    blue = '\033[34m'
+
+    _log_label(blue, 'INFO ')
+    _log_message(blue, message)
+
+####################################################################################################
+
+def log_ok(message):
+    """
+    Log an "OK" message in the terminal, in green.
+    """
+    bg_green = '\033[42m'
+    fg_green = '\033[32m'
+
+    _log_label(bg_green, ' OK  ', 0)
+    _log_message(fg_green, message)
+
+####################################################################################################
+
+def log_ko(message):
+    """
+    Log a "KO" message in the terminal, in red.
+    """
+    fg_red = '\033[31m'
+    bg_red = '\033[41m'
+
+    _log_label(bg_red, ' KO  ', 0)
+    _log_message(fg_red, message)
+
+####################################################################################################
+
+def _log_label(color, label, z_index=1):
+    """
+    Label logging.
+    """
+    if z_index == 1:
+        print('[{}{}{}] '.format(color, label, _FG_DEFAULT), end='')
+    elif z_index == 0:
+        print('[{}{}{}] '.format(color, label, _BG_DEFAULT), end='')
+
+####################################################################################################
+
+def _log_message(color, message):
+    """
+    Message logging.
+    """
+    print('{}{}{}'.format(color, message, _FG_DEFAULT))
