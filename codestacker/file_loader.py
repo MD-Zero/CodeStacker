@@ -11,12 +11,13 @@ def load_yaml(file):
     """
     Read a YAML file and return its content as a list of dictionaries--or die.
     """
+    import os
     import yaml
 
-    from .helpers import die
-    from .logger  import log_ok, log_info
+    from .exceptions import TechnicalError
+    from .logger     import log_ok, log_info
 
-    log_info('>> Reading "{}" file...'.format(file))
+    log_info('>> Reading "{}" file...'.format(os.path.relpath(file)))
 
     content = []
 
@@ -25,12 +26,12 @@ def load_yaml(file):
         with open(file, 'r') as stream:
             content = list(yaml.safe_load_all(stream))
     except IOError as error:
-        die('File I/O', error)
+        raise TechnicalError('file handling error', error)
     except yaml.YAMLError as error:
-        die('YAML loading error', error)
+        raise TechnicalError('YAML parsing error', error)
 
     if not content:
-        die('Empty YAML file')
+        raise TechnicalError('empty YAML file')
 
     log_ok('<< Success')
 

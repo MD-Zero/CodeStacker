@@ -11,8 +11,8 @@ def select_config(configs, config_name):
     """
     From the configurations in input, extract the wished one.
     """
-    from .helpers import die
-    from .logger  import log_info
+    from .exceptions import TechnicalError
+    from .logger     import log_info
 
     for config in configs:
         if config_name in config:
@@ -20,7 +20,7 @@ def select_config(configs, config_name):
 
             return config[config_name]
 
-    die('Configuration "{}" not found'.format(config_name))
+    raise TechnicalError('configuration "{}" not found'.format(config_name))
 
 ####################################################################################################
 

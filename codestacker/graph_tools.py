@@ -18,9 +18,7 @@ def is_directed_acyclic_graph(graph):
         if node in dead_ends:
             continue
 
-        if _go_down_and_check_cycle([node], children, graph, dead_ends):
-            is_acyclic = False
-            break
+        _go_down_and_check_cycle([node], children, graph, dead_ends)
 
     return is_acyclic
 
@@ -62,6 +60,8 @@ def _go_down_and_check_cycle(visited_nodes, children, graph, dead_ends):
     """
     Given a start node, visit all its descendants, looking for a cycle.
     """
+    from .exceptions import GraphError
+
     for node in children:
         if (node not in graph) or (node in dead_ends):
             continue
@@ -72,7 +72,7 @@ def _go_down_and_check_cycle(visited_nodes, children, graph, dead_ends):
         visited_nodes.append(node)
 
         if _go_down_and_check_cycle(visited_nodes, graph[node], graph, dead_ends):
-            return True
+            raise GraphError('cycle(s) in graph detected')
 
         dead_ends.add(visited_nodes.pop())
 
