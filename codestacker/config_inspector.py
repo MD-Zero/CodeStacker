@@ -80,9 +80,8 @@ def _check_and_substitute_vars(config):
     """
     import re
 
-    from .exceptions  import GraphError, TechnicalError
+    from .exceptions  import GraphError, TechnicalError, FunctionalError
     from .graph_tools import is_directed_acyclic_graph, get_topological_ordering
-    from .helpers     import die
 
     # Check first variables correctness.
     for value in config.values():
@@ -91,9 +90,9 @@ def _check_and_substitute_vars(config):
 
         for var in re.findall(_REGEX_VAR, value):
             if var not in config:
-                die('Variable "{}" is undefined'.format(var))
+                raise FunctionalError('variable "{}" is undefined'.format(var))
             elif not isinstance(config[var], str):
-                die('Variable "{}" is not of type "string"'.format(var))
+                raise FunctionalError('variable "{}" is not of type "str"'.format(var))
 
     # Gather all variables in one place.
     all_vars = {}
@@ -108,12 +107,10 @@ def _check_and_substitute_vars(config):
     try:
         is_directed_acyclic_graph(all_vars)
     except GraphError as error:
-        raise TechnicalError('Error in variables references: {}'.format(error.get_message()))
+        raise TechnicalError('error in variables references ({})'.format(error.get_message()))
 
     # Based on their topological ordering, proceed with the substitutions.
-    ordered_vars = get_topological_ordering(all_vars)
-
-    for var in ordered_vars:
+    for var in get_topological_ordering(all_vars):
         for key, value in config.items():
             if not isinstance(value, str):
                 continue
@@ -124,6 +121,7 @@ def _check_and_substitute_vars(config):
 
 def _set_absolute_paths(root, config):
     """
+    Transform all "path" in configuration keys into their absolute equivalent.
     """
     from .            import constants as keys
     from .file_system import get_absolute_path
