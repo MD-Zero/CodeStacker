@@ -24,7 +24,7 @@ def select_config(configs, config_name):
 
 ####################################################################################################
 
-def validate_config(config):
+def validate_config(root, config):
     """
     Validate the correctness of the configuration in input.
     """
@@ -34,6 +34,7 @@ def validate_config(config):
 
     _check_keys(config)
     _check_and_substitute_vars(config)
+    _set_absolute_paths(root, config)
 
     log_ok('<< Success')
 
@@ -67,14 +68,16 @@ def _check_keys(config):
     elif not isinstance(config[keys.KEY_DIR_SOURCE], str):
         die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_SOURCE, 'string'))
 
-    # "dir_bin" (optional).
-    if (keys.KEY_DIR_BIN in config) and\
-       (not isinstance(config[keys.KEY_DIR_BIN], str)):
+    # "dir_bin" (mandatory).
+    if keys.KEY_DIR_BIN not in config:
+        die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_BIN))
+    elif not isinstance(config[keys.KEY_DIR_BIN], str):
         die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_BIN, 'string'))
 
-    # "dir_build" (optional).
-    if (keys.KEY_DIR_BUILD in config) and\
-       (not isinstance(config[keys.KEY_DIR_BUILD], str)):
+    # "dir_build" (mandatory).
+    if keys.KEY_DIR_BUILD not in config:
+        die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_BUILD))
+    elif not isinstance(config[keys.KEY_DIR_BUILD], str):
         die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_BUILD, 'string'))
 
     # "compiler_options" (optional).
@@ -98,6 +101,7 @@ def _check_and_substitute_vars(config):
     """
     import re
 
+    from .exceptions  import GraphError, TechnicalError
     from .graph_tools import is_directed_acyclic_graph, get_topological_ordering
     from .helpers     import die
 
@@ -122,8 +126,10 @@ def _check_and_substitute_vars(config):
         all_vars[key] = set(re.findall(_REGEX_VAR, value))
 
     # Check if variables form a DAG (Directed Acyclic Graph).
-    if not is_directed_acyclic_graph(all_vars):
-        die('Cyclic variable reference detected')
+    try:
+        is_directed_acyclic_graph(all_vars)
+    except GraphError as error:
+        raise TechnicalError('Error in variables references: {}'.format(error.get_message()))
 
     # Based on their topological ordering, proceed with the substitutions.
     ordered_vars = get_topological_ordering(all_vars)
@@ -134,3 +140,16 @@ def _check_and_substitute_vars(config):
                 continue
 
             config[key] = config[key].replace('${{{}}}'.format(var), config[var])
+
+####################################################################################################
+
+def _set_absolute_paths(root, config):
+    """
+    """
+    from .            import constants as keys
+    from .file_system import get_absolute_path
+
+    config[keys.KEY_DIR_BIN] = get_absolute_path(root, config[keys.KEY_DIR_BIN])
+    config[keys.KEY_DIR_BUILD] = get_absolute_path(root, config[keys.KEY_DIR_BUILD])
+    config[keys.KEY_DIR_INCLUDE] = get_absolute_path(root, config[keys.KEY_DIR_INCLUDE])
+    config[keys.KEY_DIR_SOURCE] = get_absolute_path(root, config[keys.KEY_DIR_SOURCE])

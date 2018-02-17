@@ -11,26 +11,27 @@ Program flow:
 
 ####################################################################################################
 
-def main():
+def main(arguments):
     """
     Script's main function.
     """
-    import sys
+    import os
 
-    from .args_parser      import parse_args
     from .builder          import build
+    from .cleaner          import clean
     from .config_inspector import select_config, validate_config
     from .file_loader      import load_yaml
 
-    options = parse_args()
+    command = arguments['command']
+    filename = arguments['file']
 
-    filename = options['file']
-    config_name = options['config']
+    config = select_config(load_yaml(filename), arguments['config'])
 
-    config = select_config(load_yaml(filename), config_name)
+    root = os.path.dirname(filename)
 
-    validate_config(config)
+    validate_config(root, config)
 
-    build(filename, config)
-
-    sys.exit(0)
+    if command == 'build':
+        build(root, config)
+    elif command == 'clean':
+        clean(root, config)
