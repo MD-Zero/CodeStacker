@@ -13,12 +13,13 @@ def is_directed_acyclic_graph(graph):
     """
     is_acyclic = True
     dead_ends = set()
+    depth = 0
 
     for node, children in graph.items():
         if node in dead_ends:
             continue
 
-        _go_down_and_check_cycle([node], children, graph, dead_ends)
+        _go_down_and_check_cycle([node], children, graph, dead_ends, depth)
 
     return is_acyclic
 
@@ -56,11 +57,17 @@ def get_topological_ordering(graph):
 
 ####################################################################################################
 
-def _go_down_and_check_cycle(visited_nodes, children, graph, dead_ends):
+def _go_down_and_check_cycle(visited_nodes, children, graph, dead_ends, depth):
     """
     Given a start node, visit all its descendants, looking for a cycle.
     """
     from .exceptions import GraphError
+
+    depth += 1
+
+    # '10' is an arbitrary limit.
+    if depth >= 10:
+        raise GraphError('depth threshold exceeded')
 
     for node in children:
         if (node not in graph) or (node in dead_ends):
@@ -71,7 +78,7 @@ def _go_down_and_check_cycle(visited_nodes, children, graph, dead_ends):
 
         visited_nodes.append(node)
 
-        if _go_down_and_check_cycle(visited_nodes, graph[node], graph, dead_ends):
+        if _go_down_and_check_cycle(visited_nodes, graph[node], graph, dead_ends, depth):
             raise GraphError('cycle(s) in graph detected')
 
         dead_ends.add(visited_nodes.pop())
