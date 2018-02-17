@@ -40,55 +40,34 @@ def validate_config(root, config):
 
 ####################################################################################################
 
-_ERROR_MISSING_KEY = 'Missing mandatory "{}" key'
-_ERROR_WRONG_TYPE = 'Key "{}" is of incorrect type (should be "{}")'
-
 def _check_keys(config):
     """
     Perform presence and type checks for the configuration keys.
     """
-    from .        import constants as keys
-    from .helpers import die
+    from . import constants as keys
 
-    # "output" (mandatory).
-    if keys.KEY_OUTPUT not in config:
-        die(_ERROR_MISSING_KEY.format(keys.KEY_OUTPUT))
-    elif not isinstance(config[keys.KEY_OUTPUT], str):
-        die(_ERROR_WRONG_TYPE.format(keys.KEY_OUTPUT, 'string'))
+    _check_key(config, keys.KEY_DIR_BIN, str)
+    _check_key(config, keys.KEY_DIR_BUILD, str)
+    _check_key(config, keys.KEY_DIR_INCLUDE, str)
+    _check_key(config, keys.KEY_DIR_SOURCE, str)
+    _check_key(config, keys.KEY_OUTPUT, str)
 
-    # "dir_include" (mandatory).
-    if keys.KEY_DIR_INCLUDE not in config:
-        die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_INCLUDE))
-    elif not isinstance(config[keys.KEY_DIR_INCLUDE], str):
-        die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_INCLUDE, 'string'))
+    _check_key(config, keys.KEY_COMPILER_OPTIONS, list, True)
+    _check_key(config, keys.KEY_LIBRARIES, list, True)
 
-    # "dir_source" (mandatory).
-    if keys.KEY_DIR_SOURCE not in config:
-        die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_SOURCE))
-    elif not isinstance(config[keys.KEY_DIR_SOURCE], str):
-        die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_SOURCE, 'string'))
+####################################################################################################
 
-    # "dir_bin" (mandatory).
-    if keys.KEY_DIR_BIN not in config:
-        die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_BIN))
-    elif not isinstance(config[keys.KEY_DIR_BIN], str):
-        die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_BIN, 'string'))
+def _check_key(config, key, key_type, optional=False):
+    """
+    Perform presence and type checks for mandatory and optional configuration keys.
+    """
+    from .exceptions import TechnicalError
 
-    # "dir_build" (mandatory).
-    if keys.KEY_DIR_BUILD not in config:
-        die(_ERROR_MISSING_KEY.format(keys.KEY_DIR_BUILD))
-    elif not isinstance(config[keys.KEY_DIR_BUILD], str):
-        die(_ERROR_WRONG_TYPE.format(keys.KEY_DIR_BUILD, 'string'))
-
-    # "compiler_options" (optional).
-    if (keys.KEY_COMPILER_OPTIONS in config) and\
-       (not isinstance(config[keys.KEY_COMPILER_OPTIONS], list)):
-        die(_ERROR_WRONG_TYPE.format(keys.KEY_COMPILER_OPTIONS, 'list'))
-
-    # "libraries" (optional).
-    if (keys.KEY_LIBRARIES in config) and\
-       (not isinstance(config[keys.KEY_LIBRARIES], list)):
-        die(_ERROR_WRONG_TYPE.format(keys.KEY_LIBRARIES, 'list'))
+    if (key in config) and (not isinstance(config[key], key_type)):
+        raise TechnicalError(
+            'key "{}" is of incorrect type (should be "{}")'.format(key, key_type.__name__))
+    elif (not optional) and (key not in config):
+        raise TechnicalError('missing mandatory "{}" key'.format(key))
 
 ####################################################################################################
 
