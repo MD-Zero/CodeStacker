@@ -11,9 +11,7 @@ def build(dir_root, config):
     """
     Build the project (compile + link).
     """
-    import os
-
-    _compile(os.path.realpath(dir_root), config)
+    _compile(dir_root, config)
     _link(config)
 
 ####################################################################################################
@@ -25,31 +23,36 @@ def _compile(dir_root, config):
     import os
     import subprocess
 
-    from .            import constants as keys
+    from .            import constants
+    from .exceptions  import TechnicalError
     from .file_system import get_absolute_path, get_files_with_extension
-    from .helpers     import die
     from .logger      import log_info, log_ok
 
     # Dereferenced for performance.
-    dir_include = config[keys.KEY_DIR_INCLUDE]
-    compiler_options = config[keys.KEY_COMPILER_OPTIONS]
+    dir_include = config[constants.KEY_DIR_INCLUDE]
 
-    os.chdir(config[keys.KEY_DIR_BUILD])
+    os.chdir(config[constants.KEY_DIR_BUILD])
 
     log_info('>> Compilation')
 
-    for source in get_files_with_extension(config[keys.KEY_DIR_SOURCE], '.cpp'):
+    compile_command = 'g++'
+
+    if constants.KEY_COMPILER_OPTIONS in config:
+        compile_command += ' ' + ' '.join(config[constants.KEY_COMPILER_OPTIONS])
+
+    compile_command += ' -I {}'.format(dir_include)
+
+    for source in get_files_with_extension(config[constants.KEY_DIR_SOURCE], '.cpp'):
         location = os.path.relpath(source, dir_root)
 
         try:
             log_info('Compiling {}...'.format(location))
 
-            subprocess.check_output([
-                'g++', *compiler_options,
-                '-I', dir_include,
-                '-c', source])
+            compile_command += ' -c {}'.format(source)
+
+            subprocess.check_output(compile_command.split())
         except subprocess.CalledProcessError:
-            die('{} compilation failed'.format(location))
+            raise TechnicalError('{} compilation failed'.format(location))
 
     os.chdir(dir_root)
 
@@ -64,20 +67,20 @@ def _link(config):
     import os
     import subprocess
 
-    from .            import constants as keys
+    from .            import constants
+    from .exceptions  import TechnicalError
     from .file_system import get_files_with_extension
-    from .helpers     import die
     from .logger      import log_info, log_ok
 
-    os.chdir(config[keys.KEY_DIR_BIN])
+    os.chdir(config[constants.KEY_DIR_BIN])
 
     try:
         log_info('>> Linking')
 
         subprocess.check_output([
-            'g++', '-o', config[keys.KEY_OUTPUT],
-            *get_files_with_extension(config[keys.KEY_DIR_BUILD], '.o')])
+            'g++', '-o', config[constants.KEY_OUTPUT],
+            *get_files_with_extension(config[constants.KEY_DIR_BUILD], '.o')])
     except subprocess.CalledProcessError:
-        die('Linking failed')
+        raise TechnicalError('linking failed')
 
     log_ok('<< Linking successful')
