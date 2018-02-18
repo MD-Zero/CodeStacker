@@ -11,27 +11,42 @@ Program flow:
 
 ####################################################################################################
 
-def main(arguments):
+def main():
     """
     Script's main function.
     """
     import os
+    import traceback
 
+    from .args_parser      import parse_args
     from .builder          import build
     from .cleaner          import clean
-    from .config_inspector import select_config, validate_config
+    from .config_inspector import select_config, validate_config, adapt_config
+    from .exceptions       import Error
     from .file_loader      import load_yaml
+    from .logger           import log_ko
 
-    command = arguments['command']
+    arguments = parse_args()
+
     filename = arguments['file']
+    root = os.path.dirname(os.path.realpath(filename))
 
-    config = select_config(load_yaml(filename), arguments['config'])
+    try:
+        config = select_config(load_yaml(filename), arguments['config'])
 
-    root = os.path.dirname(filename)
+        validate_config(config)
+        adapt_config(root, config)
 
-    validate_config(root, config)
+        command = arguments['command']
 
-    if command == 'build':
-        build(root, config)
-    elif command == 'clean':
-        clean(root, config)
+        if command == 'build':
+            build(root, config)
+        elif command == 'clean':
+            clean(root, config)
+    except Error as error:
+        error.print()
+    except KeyboardInterrupt:
+        print()
+        log_ko('Keyboard interruption: stopping')
+    except BaseException:
+        traceback.print_exc()

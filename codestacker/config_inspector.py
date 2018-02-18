@@ -24,7 +24,7 @@ def select_config(configs, config_name):
 
 ####################################################################################################
 
-def validate_config(root, config):
+def validate_config(config):
     """
     Validate the correctness of the configuration in input.
     """
@@ -34,9 +34,22 @@ def validate_config(root, config):
 
     _check_keys(config)
     _check_and_substitute_vars(config)
-    _set_absolute_paths(root, config)
 
     log_ok('<< Success')
+
+####################################################################################################
+
+def adapt_config(root, config):
+    """
+    Transform all "path" in configuration keys into their absolute equivalent.
+    """
+    from .            import constants
+    from .file_system import get_absolute_path
+
+    config[constants.KEY_DIR_BIN] = get_absolute_path(root, config[constants.KEY_DIR_BIN])
+    config[constants.KEY_DIR_BUILD] = get_absolute_path(root, config[constants.KEY_DIR_BUILD])
+    config[constants.KEY_DIR_INCLUDE] = get_absolute_path(root, config[constants.KEY_DIR_INCLUDE])
+    config[constants.KEY_DIR_SOURCE] = get_absolute_path(root, config[constants.KEY_DIR_SOURCE])
 
 ####################################################################################################
 
@@ -116,17 +129,3 @@ def _check_and_substitute_vars(config):
                 continue
 
             config[key] = config[key].replace('${{{}}}'.format(var), config[var])
-
-####################################################################################################
-
-def _set_absolute_paths(root, config):
-    """
-    Transform all "path" in configuration keys into their absolute equivalent.
-    """
-    from .            import constants as keys
-    from .file_system import get_absolute_path
-
-    config[keys.KEY_DIR_BIN] = get_absolute_path(root, config[keys.KEY_DIR_BIN])
-    config[keys.KEY_DIR_BUILD] = get_absolute_path(root, config[keys.KEY_DIR_BUILD])
-    config[keys.KEY_DIR_INCLUDE] = get_absolute_path(root, config[keys.KEY_DIR_INCLUDE])
-    config[keys.KEY_DIR_SOURCE] = get_absolute_path(root, config[keys.KEY_DIR_SOURCE])
