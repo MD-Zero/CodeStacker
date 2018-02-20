@@ -13,14 +13,12 @@ def _get_recipe(include, file):
     """
     import subprocess
 
-    from .helpers import die
-
     recipe = None
 
     try:
         recipe = subprocess.check_output(['g++', '-I', include, '-MM', file])
     except subprocess.CalledProcessError as error:
-        die('g++ preprocessing of {} failed'.format(file), error.output)
+        pass
 
     target, prerequisites = recipe.decode('UTF-8').split(':', 1)
 
