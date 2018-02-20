@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Code builder (compilation + linking).
+Code builder: compilation + linking.
 """
 
 ####################################################################################################

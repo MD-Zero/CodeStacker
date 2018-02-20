@@ -6,7 +6,9 @@ Program flow:
     1. Parse the arguments.
     2. Load the YAML blueprint file content, and choose a configuration.
     3. Validate its inner structure.
-    4. TODO
+    4. Adapt it: set absolute paths in keys.
+    5. Run the wished configuration.
+    6. Quit the program.
 """
 
 ####################################################################################################

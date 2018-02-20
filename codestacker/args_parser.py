@@ -26,14 +26,10 @@ def parse_args():
         default='default', help='specify the configuration to use')
 
     # 'clean' argument.
-    sub_parser.add_parser(
-        'clean',
-        help='clean the compilation results')
+    sub_parser.add_parser('clean', help='clean the compilation results')
 
     # 'build' argument.
-    sub_parser.add_parser(
-        'build',
-        help='trigger the build process')
+    sub_parser.add_parser('build', help='trigger the build process')
 
     # Parse the arguments.
     # May abort the script if unexpected arguments were passed.

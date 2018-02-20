@@ -11,17 +11,16 @@ def get_absolute_path(root, directory):
     """
     Return the absolute path from the concatenated pair {root, directory} in input.
     """
-    import errno
     import os
 
     from .exceptions import TechnicalError
 
-    new_path = os.path.realpath(os.path.join(root, directory))
+    abs_path = os.path.realpath(os.path.join(root, directory))
 
-    if not os.path.exists(new_path):
-        raise TechnicalError('', FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), new_path))
+    if not os.path.exists(abs_path):
+        raise TechnicalError('file "{}" is nonexistent'.format(abs_path))
 
-    return new_path
+    return abs_path
 
 ####################################################################################################
 

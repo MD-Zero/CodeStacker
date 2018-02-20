@@ -86,6 +86,10 @@ def _check_key(config, key, key_type, optional=False):
 
 _REGEX_VAR = r'\${(\w+)}'
 
+_ERROR_VAR_UNDEFINED = 'variable "{}" is undefined'
+_ERROR_VAR_TYPE = 'variable "{}" is not of type "str"'
+_ERROR_VAR_GRAPH = 'error in variables references ({})'
+
 def _check_and_substitute_vars(config):
     """
     Check if variables are well-defined (type + existence), and if there are no cyclic references.
@@ -103,9 +107,9 @@ def _check_and_substitute_vars(config):
 
         for var in re.findall(_REGEX_VAR, value):
             if var not in config:
-                raise FunctionalError('variable "{}" is undefined'.format(var))
+                raise FunctionalError(_ERROR_VAR_UNDEFINED.format(var))
             elif not isinstance(config[var], str):
-                raise FunctionalError('variable "{}" is not of type "str"'.format(var))
+                raise FunctionalError(_ERROR_VAR_TYPE.format(var))
 
     # Gather all variables in one place.
     all_vars = {}
@@ -120,7 +124,7 @@ def _check_and_substitute_vars(config):
     try:
         is_directed_acyclic_graph(all_vars)
     except GraphError as error:
-        raise TechnicalError('error in variables references ({})'.format(error.get_message()))
+        raise TechnicalError(_ERROR_VAR_GRAPH.format(error.get_message()))
 
     # Based on their topological ordering, proceed with the substitutions.
     for var in get_topological_ordering(all_vars):

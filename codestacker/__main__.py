@@ -8,8 +8,8 @@ Script's main entry point.
 if __name__ == '__main__':
     import sys
 
-    from . import codestacker
+    from .codestacker import main
 
-    codestacker.main()
+    main()
 
     sys.exit(0)

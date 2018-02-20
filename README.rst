@@ -2,4 +2,4 @@
 CodeStacker
 ===========
 
-A homemade Python build system for C++ projects.
+A Python3 build system for C++ projects.
