@@ -7,20 +7,29 @@ YAML configuration file inspector.
 
 ####################################################################################################
 
-def select_config(configs, config_name):
+_ERROR_NO_CONFIG = 'configuration "{}" not found'
+
+def get_config(arguments):
     """
-    From the configurations in input, extract the wished one.
+    From the arguments in input, load the YAML configuration file, extract the wished configuration
+    and return it.
     """
-    from .exceptions import TechnicalError
-    from .logger     import log_info
+    import os
 
-    for config in configs:
-        if config_name in config:
-            log_info('Found "{}" configuration'.format(config_name))
+    from .            import keys
+    from .exceptions  import TechnicalError
+    from .file_loader import load_yaml
 
-            return config[config_name]
+    config = load_yaml(arguments['file']).get(arguments['config'])
 
-    raise TechnicalError('configuration "{}" not found'.format(config_name))
+    if config is None:
+        raise TechnicalError(_ERROR_NO_CONFIG.format(arguments['config']))
+
+    # Add those special keys to the configuration, for later processing.
+    config[keys.ROOT] = os.path.realpath(os.path.dirname(arguments['file']))
+    config[keys.COMMAND] = arguments['command']
+
+    return config
 
 ####################################################################################################
 
@@ -32,55 +41,80 @@ def validate_config(config):
 
     log_info('>> Validating configuration...')
 
-    _check_keys(config)
+    _check_keys_values(config)
     _check_and_substitute_vars(config)
 
     log_ok('<< Success')
 
 ####################################################################################################
 
-def adapt_config(root, config):
+def adapt_config(config):
     """
     Transform all "path" in configuration keys into their absolute equivalent.
     """
-    from .            import constants
+    from .            import keys
     from .file_system import get_absolute_path
 
-    config[constants.KEY_DIR_BIN] = get_absolute_path(root, config[constants.KEY_DIR_BIN])
-    config[constants.KEY_DIR_BUILD] = get_absolute_path(root, config[constants.KEY_DIR_BUILD])
-    config[constants.KEY_DIR_INCLUDE] = get_absolute_path(root, config[constants.KEY_DIR_INCLUDE])
-    config[constants.KEY_DIR_SOURCE] = get_absolute_path(root, config[constants.KEY_DIR_SOURCE])
+    root = config[keys.ROOT]
+
+    config[keys.BINARY] = get_absolute_path(root, config[keys.BINARY])
+    config[keys.BUILD] = get_absolute_path(root, config[keys.BUILD])
+    config[keys.INCLUDE] = get_absolute_path(root, config[keys.INCLUDE])
+    config[keys.SOURCES] = get_absolute_path(root, config[keys.SOURCES])
 
 ####################################################################################################
 
-def _check_keys(config):
+def run_config(config):
     """
-    Perform presence and type checks for the configuration keys.
+    Run the wished configuration.
     """
-    from . import constants as keys
+    from .        import keys
+    from .builder import build
+    from .cleaner import clean
 
-    _check_key(config, keys.KEY_DIR_BIN, str)
-    _check_key(config, keys.KEY_DIR_BUILD, str)
-    _check_key(config, keys.KEY_DIR_INCLUDE, str)
-    _check_key(config, keys.KEY_DIR_SOURCE, str)
-    _check_key(config, keys.KEY_OUTPUT, str)
+    command = config[keys.COMMAND]
 
-    _check_key(config, keys.KEY_COMPILER_OPTIONS, list, True)
-    _check_key(config, keys.KEY_LIBRARIES, list, True)
+    if command == 'build':
+        build(config)
+    elif command == 'clean':
+        clean(config)
 
 ####################################################################################################
 
-def _check_key(config, key, key_type, optional=False):
+def _check_keys_values(config):
+    """
+    Perform presence and type checks for the configuration keys' values.
+    """
+    from . import keys
+
+    # Mandatory attributes.
+    _check_key_value(config, keys.BINARY, str)
+    _check_key_value(config, keys.BUILD, str)
+    _check_key_value(config, keys.INCLUDE, str)
+    _check_key_value(config, keys.SOURCES, str)
+    _check_key_value(config, keys.OUTPUT, str)
+
+    # Optional attributes.
+    _check_key_value(config, keys.FLAGS, list, True)
+    _check_key_value(config, keys.LIBRARIES, list, True)
+
+####################################################################################################
+
+_ERROR_KEY_INCORRECT = 'key "{}" is of incorrect type (should be "{}")'
+_ERROR_KEY_MISSING = 'missing mandatory "{}" key'
+
+def _check_key_value(config, key, key_type, optional=False):
     """
     Perform presence and type checks for mandatory and optional configuration keys.
     """
-    from .exceptions import TechnicalError
+    from .exceptions import FunctionalError
 
-    if (key in config) and (not isinstance(config[key], key_type)):
-        raise TechnicalError(
-            'key "{}" is of incorrect type (should be "{}")'.format(key, key_type.__name__))
-    elif (not optional) and (key not in config):
-        raise TechnicalError('missing mandatory "{}" key'.format(key))
+    value = config.get(key)
+
+    if (value is None) and (not optional):
+        raise FunctionalError(_ERROR_KEY_MISSING.format(value))
+    elif (value is not None) and (not isinstance(value, key_type)):
+        raise FunctionalError(_ERROR_KEY_INCORRECT.format(key, key_type.__name__))
 
 ####################################################################################################
 

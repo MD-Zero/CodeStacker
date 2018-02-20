@@ -19,7 +19,7 @@ class Error(Exception):
         self.details = details
 
     def get_message(self):
-        """Return th error message."""
+        """Return the error message (used for unit test [BAD])."""
         return self.message
 
     def print(self):

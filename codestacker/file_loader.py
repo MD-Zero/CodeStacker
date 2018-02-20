@@ -33,6 +33,9 @@ def load_yaml(file):
     if not content:
         raise TechnicalError('empty YAML file')
 
+    # Transform the "list of dictionaries" into one single dictionary.
+    content = {key: value for pair in content for key, value in pair.items()}
+
     log_ok('<< Success')
 
     return content

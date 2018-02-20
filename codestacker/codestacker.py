@@ -17,34 +17,21 @@ def main():
     """
     Script's main function.
     """
-    import os
     import traceback
 
     from .args_parser      import parse_args
-    from .builder          import build
-    from .cleaner          import clean
-    from .config_inspector import select_config, validate_config, adapt_config
+    from .config_inspector import get_config, validate_config, adapt_config, run_config
     from .exceptions       import Error
-    from .file_loader      import load_yaml
     from .logger           import log_ko
 
     arguments = parse_args()
 
-    filename = arguments['file']
-    root = os.path.dirname(os.path.realpath(filename))
-
     try:
-        config = select_config(load_yaml(filename), arguments['config'])
+        config = get_config(arguments)
 
         validate_config(config)
-        adapt_config(root, config)
-
-        command = arguments['command']
-
-        if command == 'build':
-            build(root, config)
-        elif command == 'clean':
-            clean(root, config)
+        adapt_config(config)
+        run_config(config)
     except Error as error:
         error.print()
     except KeyboardInterrupt:

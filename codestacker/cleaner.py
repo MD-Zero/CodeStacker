@@ -7,25 +7,35 @@ Code cleaner: erase compilation results.
 
 ####################################################################################################
 
-def clean(dir_root, config):
+def clean(config):
     """
     Clean the "build" and "bin" folders.
     """
     import os
 
-    from .            import constants as keys
-    from .file_system import get_absolute_path, get_files_with_extension
+    from .            import keys
+    from .file_system import get_files
     from .logger      import log_info, log_ok
 
     # Dereferenced for performance.
-    dir_bin = config[keys.KEY_DIR_BIN]
-    dir_build = config[keys.KEY_DIR_BUILD]
+    root = config[keys.ROOT]
 
     log_info('>> Cleaning-up')
 
-    object_files = get_files_with_extension(dir_build, '.o')
+    # Remove '*.o' object files.
+    for file in get_files(config[keys.BUILD], '.o'):
+        relative_file = os.path.relpath(file, root)
 
-    for file in object_files:
+        log_info('Cleaning-up {}...'.format(relative_file))
+
         os.remove(file)
+
+    # Remove the produced executable.
+    executable_file = os.path.join(config[keys.BINARY], config[keys.OUTPUT])
+
+    if os.path.exists(executable_file):
+        log_info('Cleaning-up {}...'.format(os.path.relpath(executable_file, root)))
+
+        os.remove(executable_file)
 
     log_ok('<< Clean-up successful')
