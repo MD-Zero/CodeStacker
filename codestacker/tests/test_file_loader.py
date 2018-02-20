@@ -11,16 +11,18 @@ import unittest
 
 class TestFileLoader(unittest.TestCase):
     """
-    Test class for file_loader.py module's content.
+    Test class.
     """
     def setUp(self):
         """Set up."""
         import os
 
-        self.blueprint_good = os.path.join(os.path.dirname(__file__), 'blueprint_good.yaml')
-        self.blueprint_nonexistent = os.path.join(os.path.dirname(__file__), '#dummy123')
-        self.blueprint_bad = os.path.join(os.path.dirname(__file__), 'blueprint_bad.yaml')
-        self.blueprint_empty = os.path.join(os.path.dirname(__file__), 'blueprint_empty.yaml')
+        current_dir = os.path.dirname(__file__)
+
+        self.blueprint_good = os.path.join(current_dir, 'blueprints/blueprint_good.yaml')
+        self.blueprint_nonexistent = os.path.join(current_dir, 'blueprints/#dummy123.yaml')
+        self.blueprint_bad = os.path.join(current_dir, 'blueprints/blueprint_bad.yaml')
+        self.blueprint_empty = os.path.join(current_dir, 'blueprints/blueprint_empty.yaml')
 
     def test_blueprint_good(self):
         """Test good blueprint."""
