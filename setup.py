@@ -19,6 +19,7 @@ setup(
     license='MIT',
     packages=['codestacker'],
     install_requires=['PyYAML'],
+    include_package_data=True,
     scripts=['scripts/codestacker'],
     test_suite='nose.collector',
     tests_require=['nose']
