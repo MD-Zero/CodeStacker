@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-Unit test for file_loader.py module.
+Unit test for file_handler.py module.
 """
 
 ####################################################################################################
 
 import unittest
 
-class TestFileLoader(unittest.TestCase):
+class TestFileHandler(unittest.TestCase):
     """
     Test class.
     """
@@ -26,15 +26,15 @@ class TestFileLoader(unittest.TestCase):
 
     def test_blueprints(self):
         """Test all blueprint."""
-        from codestacker.exceptions  import TechnicalError
-        from codestacker.file_loader import load_yaml
+        from codestacker.exceptions   import TechnicalError
+        from codestacker.file_handler import load_yaml
 
         load_yaml(self.blueprint_good)
 
         with self.assertRaises(TechnicalError) as context:
             load_yaml(self.blueprint_nonexistent)
 
-        self.assertEqual(context.exception.message, 'file handling error')
+        self.assertEqual(context.exception.message, 'file reading error')
 
         with self.assertRaises(TechnicalError) as context:
             load_yaml(self.blueprint_bad)

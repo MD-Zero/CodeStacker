@@ -16,9 +16,9 @@ def get_config(arguments):
     """
     import os
 
-    from .            import keys
-    from .exceptions  import TechnicalError
-    from .file_loader import load_yaml
+    from .             import keys
+    from .exceptions   import TechnicalError
+    from .file_handler import load_yaml
 
     config = load_yaml(arguments['file']).get(arguments['config'])
 
