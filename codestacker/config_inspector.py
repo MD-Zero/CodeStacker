@@ -158,7 +158,7 @@ def _check_and_substitute_vars(config):
     try:
         is_directed_acyclic_graph(all_vars)
     except GraphError as error:
-        raise TechnicalError(_ERROR_VAR_GRAPH.format(error.get_message()))
+        raise TechnicalError(_ERROR_VAR_GRAPH.format(error.message))
 
     # Based on their topological ordering, proceed with the substitutions.
     for var in get_topological_ordering(all_vars):

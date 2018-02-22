@@ -15,25 +15,19 @@ class TestGraphTools(unittest.TestCase):
     """
     def setUp(self):
         """Set up."""
-        import os
-
-        current_dir = os.path.dirname(__file__)
-
-        self.acyclic_graph = {\
+        self.acyclic_graph = {
             'a': set(['b']),
             'b': set(['c', 'd']),
             'c': set(['d', 'e']),
             'd': set(['e', 'g']),
-            'e': set(['g'])
-        }
+            'e': set(['g'])}
 
-        self.cyclic_graph = {\
+        self.cyclic_graph = {
             'a': set(['b']),
             'b': set(['c', 'd']),
-            'c': set(['d', 'a'])
-        }
+            'c': set(['d', 'a'])}
 
-        self.deep_graph = {\
+        self.deep_graph = {
             'a': set(['b']),
             'b': set(['c']),
             'c': set(['d']),
@@ -43,8 +37,7 @@ class TestGraphTools(unittest.TestCase):
             'g': set(['h']),
             'h': set(['i']),
             'i': set(['j']),
-            'j': set(['k'])
-        }
+            'j': set(['k'])}
 
     def test_is_directed_acyclic_graph(self):
         """Test DAG detection."""
@@ -65,7 +58,6 @@ class TestGraphTools(unittest.TestCase):
 
     def test_get_topological_ordering(self):
         """Test topological ordering."""
-        from codestacker.exceptions  import GraphError
         from codestacker.graph_tools import get_topological_ordering
 
         expected_ordered_list = ['g', 'e', 'd', 'c', 'b']
