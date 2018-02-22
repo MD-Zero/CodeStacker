@@ -18,10 +18,6 @@ class Error(Exception):
         self.message = message
         self.details = details
 
-    def get_message(self):
-        """Return the error message (used for unit test [BAD])."""
-        return self.message
-
     def print(self):
         """Log a formatted error message."""
         from .logger import log_error
