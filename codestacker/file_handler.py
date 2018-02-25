@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-File loading utility.
+File handling utility.
 """
 
 ####################################################################################################
@@ -59,7 +59,7 @@ def dump_yaml(content, file):
 
     try:
         with open(file, 'w') as stream:
-            yaml.safe_dump(content, stream)
+            yaml.safe_dump(content, stream, default_flow_style=False)
     except IOError as error:
         TechnicalError(_ERROR_FILE_WRITING, error).print()
     except yaml.YAMLError as error:
