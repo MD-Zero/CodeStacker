@@ -20,9 +20,9 @@ class Error(Exception):
 
     def print(self):
         """Log a formatted error message."""
-        from .logger import log_error
+        from .logger import Logger
 
-        log_error(self.__class__.__name__ + ': ' + self.message)
+        Logger.log_error(self.__class__.__name__ + ': ' + self.message)
 
         if self.details is not None:
             print(self.details)

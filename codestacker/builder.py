@@ -11,14 +11,14 @@ def build(config):
     """
     Build the project (compile + link).
     """
-    from .logger import log_info, log_ok
+    from .logger import Logger
 
-    log_info('>> Start build')
+    Logger.log_begin('Start build')
 
     if _compile(config):
         _link(config)
 
-    log_ok('<< Build successful')
+    Logger.log_end('Build successful')
 
 ####################################################################################################
 
@@ -35,19 +35,19 @@ def _compile(config):
     from .cache_builder import get_files_to_compile
     from .exceptions    import TechnicalError
     from .file_system   import get_files
-    from .logger        import log_info, log_ok
+    from .logger        import Logger
 
     should_link = True
     files_to_compile = get_files_to_compile(config)
 
     if not files_to_compile:
-        log_info('Nothing to (re)compile')
+        Logger.log_info('Nothing to (re)compile')
 
         should_link = False
 
         return should_link
 
-    log_info('>> Compilation')
+    Logger.log_begin('Compilation')
 
     # Dereferenced for performance.
     root = config[keys.ROOT]
@@ -64,7 +64,7 @@ def _compile(config):
     for file in files_to_compile:
         relative_file = os.path.relpath(file, root)
 
-        log_info('Compiling {}...'.format(relative_file))
+        Logger.log_info('Compiling {}...'.format(relative_file))
 
         compile_command.extend(['-c', file])
 
@@ -75,7 +75,7 @@ def _compile(config):
 
     os.chdir(root)
 
-    log_ok('<< Compilation successful')
+    Logger.log_end('Compilation successful')
 
     return should_link
 
@@ -91,9 +91,9 @@ def _link(config):
     from .            import keys
     from .exceptions  import TechnicalError
     from .file_system import get_files
-    from .logger      import log_info, log_ok
+    from .logger      import Logger
 
-    log_info('>> Linking')
+    Logger.log_begin('Linking')
 
     os.chdir(config[keys.BINARY])
 
@@ -106,4 +106,4 @@ def _link(config):
 
     os.chdir(config[keys.ROOT])
 
-    log_ok('<< Linking successful')
+    Logger.log_end('Linking successful')

@@ -37,14 +37,14 @@ def validate_config(config):
     """
     Validate the correctness of the configuration in input.
     """
-    from .logger import log_info, log_ok
+    from .logger import Logger
 
-    log_info('>> Validating configuration...')
+    Logger.log_begin('Validating configuration...')
 
     _check_keys_values(config)
     _check_and_substitute_vars(config)
 
-    log_ok('<< Success')
+    Logger.log_end('Success')
 
 ####################################################################################################
 
@@ -54,13 +54,19 @@ def adapt_config(config):
     """
     from .            import keys
     from .file_system import get_absolute_path
+    from .logger      import Logger
 
+    # Dereferenced for performance.
     root = config[keys.ROOT]
+
+    Logger.log_begin('Adapting configuration paths...')
 
     config[keys.BINARY] = get_absolute_path(root, config[keys.BINARY])
     config[keys.BUILD] = get_absolute_path(root, config[keys.BUILD])
     config[keys.INCLUDE] = get_absolute_path(root, config[keys.INCLUDE])
     config[keys.SOURCES] = get_absolute_path(root, config[keys.SOURCES])
+
+    Logger.log_end('Done')
 
 ####################################################################################################
 

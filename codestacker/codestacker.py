@@ -22,7 +22,7 @@ def main():
     from .args_parser      import parse_args
     from .config_inspector import get_config, validate_config, adapt_config, run_config
     from .exceptions       import Error
-    from .logger           import log_ko
+    from .logger           import Logger
 
     arguments = parse_args()
 
@@ -36,6 +36,6 @@ def main():
         error.print()
     except KeyboardInterrupt:
         print()
-        log_ko('Keyboard interruption: stopping')
+        Logger.log_error('Keyboard interruption: stopping')
     except BaseException:
         traceback.print_exc()
