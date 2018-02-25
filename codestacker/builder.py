@@ -11,8 +11,14 @@ def build(config):
     """
     Build the project (compile + link).
     """
-    _compile(config)
-    _link(config)
+    from .logger import log_info, log_ok
+
+    log_info('>> Start build')
+
+    if _compile(config):
+        _link(config)
+
+    log_ok('<< Build successful')
 
 ####################################################################################################
 
@@ -25,10 +31,21 @@ def _compile(config):
     import os
     import subprocess
 
-    from .            import keys
-    from .exceptions  import TechnicalError
-    from .file_system import get_files
-    from .logger      import log_info, log_ok
+    from .              import keys
+    from .cache_builder import get_files_to_compile
+    from .exceptions    import TechnicalError
+    from .file_system   import get_files
+    from .logger        import log_info, log_ok
+
+    should_link = True
+    files_to_compile = get_files_to_compile(config)
+
+    if not files_to_compile:
+        log_info('Nothing to (re)compile')
+
+        should_link = False
+
+        return should_link
 
     log_info('>> Compilation')
 
@@ -44,7 +61,7 @@ def _compile(config):
 
     compile_command.extend(['-I', config[keys.INCLUDE]])
 
-    for file in get_files(config[keys.SOURCES], '.cpp'):
+    for file in files_to_compile:
         relative_file = os.path.relpath(file, root)
 
         log_info('Compiling {}...'.format(relative_file))
@@ -60,6 +77,8 @@ def _compile(config):
 
     log_ok('<< Compilation successful')
 
+    return should_link
+
 ####################################################################################################
 
 def _link(config):
@@ -74,13 +93,13 @@ def _link(config):
     from .file_system import get_files
     from .logger      import log_info, log_ok
 
+    log_info('>> Linking')
+
     os.chdir(config[keys.BINARY])
 
     linking_command = ['g++', '-o', config[keys.OUTPUT], *get_files(config[keys.BUILD], '.o')]
 
     try:
-        log_info('>> Linking')
-
         subprocess.check_output(linking_command)
     except subprocess.CalledProcessError:
         raise TechnicalError('linking failed')
