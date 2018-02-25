@@ -11,9 +11,13 @@ def build(config):
     """
     Build the project (compile + link).
     """
-    from .logger import Logger
+    from .                  import keys
+    from .logger            import Logger
+    from .sources_inspector import validate_sources
 
     Logger.log_begin('Start build')
+
+    validate_sources(config[keys.INCLUDE], config[keys.SOURCES])
 
     if _compile(config):
         _link(config)
