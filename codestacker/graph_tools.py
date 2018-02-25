@@ -57,6 +57,9 @@ def get_topological_ordering(graph):
 
 ####################################################################################################
 
+_ERROR_DEPTH_THRESHOLD = 'depth threshold exceeded'
+_ERROR_CYCLES_IN_GRAPH = 'cycle(s) in graph detected'
+
 def _go_down_and_check_cycle(visited_nodes, children, graph, dead_ends, depth):
     """
     Given a start node, visit all its descendants, looking for a cycle.
@@ -67,7 +70,7 @@ def _go_down_and_check_cycle(visited_nodes, children, graph, dead_ends, depth):
 
     # '10' is an arbitrary limit.
     if depth >= 10:
-        raise GraphError('depth threshold exceeded')
+        raise GraphError(_ERROR_DEPTH_THRESHOLD)
 
     for node in children:
         if (node not in graph) or (node in dead_ends):
@@ -79,7 +82,7 @@ def _go_down_and_check_cycle(visited_nodes, children, graph, dead_ends, depth):
         visited_nodes.append(node)
 
         if _go_down_and_check_cycle(visited_nodes, graph[node], graph, dead_ends, depth):
-            raise GraphError('cycle(s) in graph detected')
+            raise GraphError(_ERROR_CYCLES_IN_GRAPH)
 
         dead_ends.add(visited_nodes.pop())
 

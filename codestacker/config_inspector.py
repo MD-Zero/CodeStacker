@@ -39,12 +39,12 @@ def validate_config(config):
     """
     from .logger import Logger
 
-    Logger.log_begin('Validating configuration...')
+    Logger.log_begin('Checking configuration...')
 
     _check_keys_values(config)
     _check_and_substitute_vars(config)
 
-    Logger.log_end('Success')
+    Logger.log_end('Configuration valid')
 
 ####################################################################################################
 
