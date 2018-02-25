@@ -9,33 +9,60 @@ Code cleaner: erase compilation results.
 
 def clean(config):
     """
-    Clean the "build" and "bin" folders.
+    Clean any compilation results.
     """
     import os
 
-    from .            import keys
-    from .file_system import get_files
-    from .logger      import log_info, log_ok
-
-    # Dereferenced for performance.
-    root = config[keys.ROOT]
+    from .       import cache_builder, keys
+    from .logger import log_info, log_ok
 
     log_info('>> Cleaning-up')
 
-    # Remove '*.o' object files.
-    for file in get_files(config[keys.BUILD], '.o'):
-        relative_file = os.path.relpath(file, root)
+    # Dereferenced for performance.
+    root = config[keys.ROOT]
+    build_dir = config[keys.BUILD]
 
-        log_info('Cleaning-up {}...'.format(relative_file))
+    # Remove '*.o' object files.
+    _remove_files(build_dir, '.o', root)
+
+    # Remove '*.gch' precompiled header files.
+    _remove_files(config[keys.SOURCES], '.gch', root)
+
+    # Remove the produced executable.
+    _remove_file(os.path.join(config[keys.BINARY], config[keys.OUTPUT]), root)
+
+    # Remove the cache file.
+    _remove_file(os.path.join(build_dir, cache_builder.CACHE_FILENAME), root)
+
+    log_ok('<< Clean-up successful')
+
+####################################################################################################
+
+def _remove_files(directory, extension, root):
+    """
+    Remove all files within "directory" ending with "extension".
+    """
+    import os
+
+    from .logger      import log_info
+    from .file_system import get_files
+
+    for file in get_files(directory, extension):
+        log_info('Cleaning-up {}...'.format(os.path.relpath(file, root)))
 
         os.remove(file)
 
-    # Remove the produced executable.
-    executable_file = os.path.join(config[keys.BINARY], config[keys.OUTPUT])
+####################################################################################################
 
-    if os.path.exists(executable_file):
-        log_info('Cleaning-up {}...'.format(os.path.relpath(executable_file, root)))
+def _remove_file(file, root):
+    """
+    Remove "file" in input.
+    """
+    import os
 
-        os.remove(executable_file)
+    from .logger import log_info
 
-    log_ok('<< Clean-up successful')
+    if os.path.exists(file):
+        log_info('Cleaning-up {}...'.format(os.path.relpath(file, root)))
+
+        os.remove(file)
