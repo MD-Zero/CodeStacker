@@ -16,7 +16,7 @@ def clean(config):
     from .       import cache_builder, keys
     from .logger import Logger
 
-    Logger.log_begin('Cleaning-up')
+    Logger.begin('Cleaning-up')
 
     # Dereferenced for performance.
     root = config[keys.ROOT]
@@ -34,7 +34,7 @@ def clean(config):
     # Remove the cache file.
     _remove_file(os.path.join(build_dir, cache_builder.CACHE_FILENAME), root)
 
-    Logger.log_end('Clean-up successful')
+    Logger.end('Clean-up successful')
 
 ####################################################################################################
 
@@ -48,7 +48,7 @@ def _remove_files(directory, extension, root):
     from .file_system import get_files
 
     for file in get_files(directory, extension):
-        Logger.log_info('Cleaning-up {}...'.format(os.path.relpath(file, root)))
+        Logger.info('Cleaning-up {}...'.format(os.path.relpath(file, root)))
 
         os.remove(file)
 
@@ -63,6 +63,6 @@ def _remove_file(file, root):
     from .logger import Logger
 
     if os.path.exists(file):
-        Logger.log_info('Cleaning-up {}...'.format(os.path.relpath(file, root)))
+        Logger.info('Cleaning-up {}...'.format(os.path.relpath(file, root)))
 
         os.remove(file)

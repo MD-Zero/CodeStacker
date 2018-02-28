@@ -15,14 +15,14 @@ def build(config):
     from .logger            import Logger
     from .sources_inspector import validate_sources
 
-    Logger.log_begin('Start build')
+    Logger.begin('Start build')
 
     validate_sources(config[keys.INCLUDE], config[keys.SOURCES])
 
     if _compile(config):
         _link(config)
 
-    Logger.log_end('Build successful')
+    Logger.end('Build successful')
 
 ####################################################################################################
 
@@ -45,13 +45,13 @@ def _compile(config):
     files_to_compile = get_files_to_compile(config)
 
     if not files_to_compile:
-        Logger.log_info('Nothing to (re)compile')
+        Logger.info('Nothing to (re)compile')
 
         should_link = False
 
         return should_link
 
-    Logger.log_begin('Compilation')
+    Logger.begin('Compilation')
 
     # Dereferenced for performance.
     root = config[keys.ROOT]
@@ -68,7 +68,7 @@ def _compile(config):
     for file in files_to_compile:
         relative_file = os.path.relpath(file, root)
 
-        Logger.log_info('Compiling {}...'.format(relative_file))
+        Logger.info('Compiling {}...'.format(relative_file))
 
         compile_command.extend(['-c', file])
 
@@ -79,7 +79,7 @@ def _compile(config):
 
     os.chdir(root)
 
-    Logger.log_end('Compilation successful')
+    Logger.end('Compilation successful')
 
     return should_link
 
@@ -97,7 +97,7 @@ def _link(config):
     from .file_system import get_files
     from .logger      import Logger
 
-    Logger.log_begin('Linking')
+    Logger.begin('Linking')
 
     os.chdir(config[keys.BINARY])
 
@@ -110,4 +110,4 @@ def _link(config):
 
     os.chdir(config[keys.ROOT])
 
-    Logger.log_end('Linking successful')
+    Logger.end('Linking successful')

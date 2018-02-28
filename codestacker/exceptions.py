@@ -22,7 +22,7 @@ class Error(Exception):
         """Log a formatted error message."""
         from .logger import Logger
 
-        Logger.log_error(self.__class__.__name__ + ': ' + self.message)
+        Logger.error(self.__class__.__name__ + ': ' + self.message)
 
         if self.details is not None:
             print(self.details)

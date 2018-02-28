@@ -39,12 +39,12 @@ def validate_config(config):
     """
     from .logger import Logger
 
-    Logger.log_begin('Checking configuration...')
+    Logger.begin('Checking configuration...')
 
     _check_keys(config)
     _check_and_substitute_vars(config)
 
-    Logger.log_end('Configuration valid')
+    Logger.end('Configuration valid')
 
 ####################################################################################################
 
@@ -58,7 +58,7 @@ def adapt_config(config):
     # Dereferenced for performance.
     root = config[keys.ROOT]
 
-    Logger.log_begin('Adapting configuration paths...')
+    Logger.begin('Adapting configuration paths...')
 
     _adapt_path(root, config, keys.INCLUDE)
     _adapt_path(root, config, keys.SOURCES)
@@ -66,7 +66,7 @@ def adapt_config(config):
     _adapt_path(root, config, keys.BINARY, True)
     _adapt_path(root, config, keys.BUILD, True)
 
-    Logger.log_end('Done')
+    Logger.end('Done')
 
 ####################################################################################################
 

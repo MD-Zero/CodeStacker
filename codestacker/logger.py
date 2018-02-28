@@ -19,7 +19,7 @@ class Logger():
     __INDENT = 0
 
     @staticmethod
-    def log_begin(message):
+    def begin(message):
         """Log the beginning of a sequence in the terminal, in blue."""
         Logger.__log_label(Logger.__BLUE, 'INFO ', Logger.__indent() + '╭')
         Logger.__log_message(Logger.__BLUE, message)
@@ -27,13 +27,13 @@ class Logger():
         Logger.__INDENT += 1
 
     @staticmethod
-    def log_info(message):
+    def info(message):
         """Log an information message in the terminal, in blue."""
         Logger.__log_label(Logger.__BLUE, 'INFO ', Logger.__indent(True) + '├')
         Logger.__log_message(Logger.__BLUE, message)
 
     @staticmethod
-    def log_end(message):
+    def end(message):
         """Log the end of a sequence in the terminal, in blue and green."""
         Logger.__INDENT -= 1
 
@@ -41,13 +41,13 @@ class Logger():
         Logger.__log_message(Logger.__GREEN, message)
 
     @staticmethod
-    def log_error(message):
+    def error(message):
         """Log an error message in the terminal, in red."""
         Logger.__log_label(Logger.__RED, 'ERROR', Logger.__indent(True) + '╳')
         Logger.__log_message(Logger.__RED, message)
 
     @staticmethod
-    def log_warning(message):
+    def warning(message):
         """Log a warning message in the terminal, in yellow."""
         Logger.__log_label(Logger.__YELLOW, 'WARN ', Logger.__indent(True) + '!')
         Logger.__log_message(Logger.__YELLOW, message)

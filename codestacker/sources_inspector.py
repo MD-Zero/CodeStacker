@@ -20,7 +20,7 @@ def validate_sources(include_dir, sources_dir):
     from .file_system import get_files
     from .logger      import Logger
 
-    Logger.log_begin('Checking headers and sources...')
+    Logger.begin('Checking headers and sources...')
 
     # Headers.
     for file in get_files(include_dir, '.hpp'):
@@ -36,4 +36,4 @@ def validate_sources(include_dir, sources_dir):
         if re.search(r'^\w+\.cpp$', filename) is None:
             raise TechnicalError(_ERROR_INVALID_FILE.format(filename))
 
-    Logger.log_end('Headers and sources valid')
+    Logger.end('Headers and sources valid')

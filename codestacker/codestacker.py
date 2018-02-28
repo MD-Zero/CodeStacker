@@ -36,6 +36,6 @@ def main():
         error.print()
     except KeyboardInterrupt:
         print()
-        Logger.log_error('Keyboard interruption: stopping')
+        Logger.error('Keyboard interruption: stopping')
     except BaseException:
         traceback.print_exc()

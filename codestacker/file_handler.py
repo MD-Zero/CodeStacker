@@ -21,7 +21,7 @@ def load_yaml(file):
     from .exceptions import TechnicalError
     from .logger     import Logger
 
-    Logger.log_begin('Reading "{}" file...'.format(os.path.relpath(file)))
+    Logger.begin('Reading "{}" file...'.format(os.path.relpath(file)))
 
     content = []
 
@@ -40,7 +40,7 @@ def load_yaml(file):
     # Transform the "list of dictionaries" into one single dictionary.
     content = {key: value for pair in content for key, value in pair.items()}
 
-    Logger.log_end('Success')
+    Logger.end('Success')
 
     return content
 
