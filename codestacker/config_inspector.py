@@ -116,7 +116,7 @@ def _check_key(key, value, key_type, optional=False):
     from .exceptions import FunctionalError
 
     if (value is None) and (not optional):
-        raise FunctionalError(_ERROR_KEY_MISSING.format(value))
+        raise FunctionalError(_ERROR_KEY_MISSING.format(key))
     elif (value is not None) and (not isinstance(value, key_type)):
         raise FunctionalError(_ERROR_KEY_INCORRECT.format(key, key_type.__name__))
 
