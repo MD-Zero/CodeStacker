@@ -41,7 +41,7 @@ def validate_config(config):
 
     Logger.log_begin('Checking configuration...')
 
-    _check_keys_values(config)
+    _check_keys(config)
     _check_and_substitute_vars(config)
 
     Logger.log_end('Configuration valid')
@@ -52,19 +52,19 @@ def adapt_config(config):
     """
     Transform all "path" in configuration keys into their absolute equivalent.
     """
-    from .            import keys
-    from .file_system import get_absolute_path
-    from .logger      import Logger
+    from .       import keys
+    from .logger import Logger
 
     # Dereferenced for performance.
     root = config[keys.ROOT]
 
     Logger.log_begin('Adapting configuration paths...')
 
-    config[keys.BINARY] = get_absolute_path(root, config[keys.BINARY])
-    config[keys.BUILD] = get_absolute_path(root, config[keys.BUILD])
-    config[keys.INCLUDE] = get_absolute_path(root, config[keys.INCLUDE])
-    config[keys.SOURCES] = get_absolute_path(root, config[keys.SOURCES])
+    _adapt_path(root, config, keys.INCLUDE)
+    _adapt_path(root, config, keys.SOURCES)
+
+    _adapt_path(root, config, keys.BINARY, True)
+    _adapt_path(root, config, keys.BUILD, True)
 
     Logger.log_end('Done')
 
@@ -87,35 +87,33 @@ def run_config(config):
 
 ####################################################################################################
 
-def _check_keys_values(config):
+def _check_keys(config):
     """
     Perform presence and type checks for the configuration keys' values.
     """
     from . import keys
 
     # Mandatory attributes.
-    _check_key_value(config, keys.BINARY, str)
-    _check_key_value(config, keys.BUILD, str)
-    _check_key_value(config, keys.INCLUDE, str)
-    _check_key_value(config, keys.SOURCES, str)
-    _check_key_value(config, keys.OUTPUT, str)
+    _check_key(keys.BINARY, config.get(keys.BINARY), str)
+    _check_key(keys.BUILD, config.get(keys.BUILD), str)
+    _check_key(keys.INCLUDE, config.get(keys.INCLUDE), str)
+    _check_key(keys.SOURCES, config.get(keys.SOURCES), str)
+    _check_key(keys.OUTPUT, config.get(keys.OUTPUT), str)
 
     # Optional attributes.
-    _check_key_value(config, keys.FLAGS, list, True)
-    _check_key_value(config, keys.LIBRARIES, list, True)
+    _check_key(keys.FLAGS, config.get(keys.FLAGS), list, True)
+    _check_key(keys.LIBRARIES, config.get(keys.LIBRARIES), list, True)
 
 ####################################################################################################
 
 _ERROR_KEY_INCORRECT = 'key "{}" is of incorrect type (should be "{}")'
 _ERROR_KEY_MISSING = 'missing mandatory "{}" key'
 
-def _check_key_value(config, key, key_type, optional=False):
+def _check_key(key, value, key_type, optional=False):
     """
     Perform presence and type checks for mandatory and optional configuration keys.
     """
     from .exceptions import FunctionalError
-
-    value = config.get(key)
 
     if (value is None) and (not optional):
         raise FunctionalError(_ERROR_KEY_MISSING.format(value))
@@ -173,3 +171,25 @@ def _check_and_substitute_vars(config):
                 continue
 
             config[key] = config[key].replace('${{{}}}'.format(var), config[var])
+
+####################################################################################################
+
+_ERROR_FOLDER_NOT_FOUND = 'folder "{}" is nonexistent'
+
+def _adapt_path(root, config, key, should_create=False):
+    """
+    """
+    import os
+
+    from .exceptions import TechnicalError
+    from .logger     import Logger
+
+    abs_path = os.path.realpath(os.path.join(root, config[key]))
+
+    if not os.path.exists(abs_path):
+        if not should_create:
+            raise TechnicalError(_ERROR_FOLDER_NOT_FOUND.format(abs_path))
+        else:
+            os.makedirs(abs_path)
+
+    config[key] = abs_path
