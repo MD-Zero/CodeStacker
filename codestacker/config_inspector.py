@@ -129,7 +129,7 @@ def _check_key(key, value, key_type, optional=False):
 
 ####################################################################################################
 
-_REGEX_VAR = r'\${(\w+)}'
+_REGEX_VAR = r'\$(\w+)'
 
 _ERROR_VAR_UNDEFINED = 'variable "{}" is undefined'
 _ERROR_VAR_TYPE = 'variable "{}" is not of type "str"'
@@ -177,7 +177,7 @@ def _check_and_substitute_vars(config):
             if not isinstance(value, str):
                 continue
 
-            config[key] = config[key].replace('${{{}}}'.format(var), config[var])
+            config[key] = config[key].replace('${}'.format(var), config[var])
 
 ####################################################################################################
 
@@ -197,6 +197,8 @@ def _adapt_path(root, config, key, should_create=False):
         if not should_create:
             raise TechnicalError(_ERROR_FOLDER_NOT_FOUND.format(abs_path))
         else:
+            Logger.warning('Folder "{}" not found: creating it...'.format(abs_path))
+
             os.makedirs(abs_path)
 
     config[key] = abs_path

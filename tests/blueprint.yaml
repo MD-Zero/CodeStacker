@@ -5,4 +5,4 @@ default:
   include: src
   libraries: [glfw]
   output: Test
-  sources: ${include}
+  sources: $include
