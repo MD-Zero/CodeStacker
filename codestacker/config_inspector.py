@@ -50,7 +50,7 @@ def validate_config(config):
 
 def adapt_config(config):
     """
-    Transform all "path" in configuration keys into their absolute equivalent.
+    Adapt configuration keys to match process requirements (values, definition, etc.).
     """
     from .       import keys
     from .logger import Logger
@@ -58,13 +58,19 @@ def adapt_config(config):
     # Dereferenced for performance.
     root = config[keys.ROOT]
 
-    Logger.begin('Adapting configuration paths...')
+    Logger.begin('Adapting configuration keys...')
 
     _adapt_path(root, config, keys.INCLUDE)
     _adapt_path(root, config, keys.SOURCES)
 
     _adapt_path(root, config, keys.BINARY, True)
     _adapt_path(root, config, keys.BUILD, True)
+
+    _turn_into_set(config, keys.FLAGS)
+    _turn_into_set(config, keys.LIBRARIES)
+
+    # Add this special flag to force the compiler to print its output in colors.
+    config[keys.FLAGS].add('-fdiagnostics-color=always')
 
     Logger.end('Done')
 
@@ -78,6 +84,7 @@ def run_config(config):
     from .builder import build
     from .cleaner import clean
 
+    # Dereferenced for performance.
     command = config[keys.COMMAND]
 
     if command == 'build':
@@ -97,8 +104,8 @@ def _check_keys(config):
     _check_key(keys.BINARY, config.get(keys.BINARY), str)
     _check_key(keys.BUILD, config.get(keys.BUILD), str)
     _check_key(keys.INCLUDE, config.get(keys.INCLUDE), str)
-    _check_key(keys.SOURCES, config.get(keys.SOURCES), str)
     _check_key(keys.OUTPUT, config.get(keys.OUTPUT), str)
+    _check_key(keys.SOURCES, config.get(keys.SOURCES), str)
 
     # Optional attributes.
     _check_key(keys.FLAGS, config.get(keys.FLAGS), list, True)
@@ -184,7 +191,7 @@ def _adapt_path(root, config, key, should_create=False):
     from .exceptions import TechnicalError
     from .logger     import Logger
 
-    abs_path = os.path.realpath(os.path.join(root, config[key]))
+    abs_path = os.path.join(root, config[key])
 
     if not os.path.exists(abs_path):
         if not should_create:
@@ -193,3 +200,14 @@ def _adapt_path(root, config, key, should_create=False):
             os.makedirs(abs_path)
 
     config[key] = abs_path
+
+####################################################################################################
+
+def _turn_into_set(config, key):
+    """
+    Turn the configuration key's values into a set.
+    """
+    if key in config:
+        config[key] = set(config[key])
+    else:
+        config[key] = set()

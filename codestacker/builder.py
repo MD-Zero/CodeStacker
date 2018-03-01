@@ -19,14 +19,14 @@ def build(config):
 
     validate_sources(config[keys.INCLUDE], config[keys.SOURCES])
 
-    if _compile(config):
-        _link(config)
+    _compile(config)
+    _link(config)
 
     Logger.end('Build successful')
 
 ####################################################################################################
 
-_ERROR_COMPILATION_FAILED = '{} compilation failed'
+_ERROR_COMPILATION = 'compilation failed'
 
 def _compile(config):
     """
@@ -38,25 +38,19 @@ def _compile(config):
     from .              import keys
     from .cache_builder import get_files_to_compile
     from .exceptions    import TechnicalError
-    from .file_system   import get_files
     from .logger        import Logger
 
-    should_link = True
     files_to_compile = get_files_to_compile(config)
 
     if not files_to_compile:
         Logger.info('Nothing to (re)compile')
 
-        should_link = False
-
-        return should_link
+        return
 
     Logger.begin('Compilation')
 
     # Dereferenced for performance.
     root = config[keys.ROOT]
-
-    os.chdir(config[keys.BUILD])
 
     compile_command = ['g++']
 
@@ -64,6 +58,8 @@ def _compile(config):
         compile_command.extend(config[keys.FLAGS])
 
     compile_command.extend(['-I', config[keys.INCLUDE]])
+
+    os.chdir(config[keys.BUILD])
 
     for file in files_to_compile:
         relative_file = os.path.relpath(file, root)
@@ -73,17 +69,17 @@ def _compile(config):
         compile_command.extend(['-c', file])
 
         try:
-            subprocess.check_output(compile_command)
-        except subprocess.CalledProcessError:
-            raise TechnicalError(_ERROR_COMPILATION_FAILED.format(relative_file))
+            subprocess.run(compile_command, stderr=subprocess.PIPE, check=True)
+        except subprocess.CalledProcessError as error:
+            raise TechnicalError(_ERROR_COMPILATION, error.stderr.decode('UTF-8'))
 
     os.chdir(root)
 
     Logger.end('Compilation successful')
 
-    return should_link
-
 ####################################################################################################
+
+_ERROR_LINKING = 'linking failed'
 
 def _link(config):
     """
@@ -103,10 +99,13 @@ def _link(config):
 
     linking_command = ['g++', '-o', config[keys.OUTPUT], *get_files(config[keys.BUILD], '.o')]
 
+    if config[keys.LIBRARIES]:
+        linking_command.extend('-l' + x for x in config[keys.LIBRARIES])
+
     try:
-        subprocess.check_output(linking_command)
-    except subprocess.CalledProcessError:
-        raise TechnicalError('linking failed')
+        subprocess.run(linking_command, stderr=subprocess.PIPE, check=True)
+    except subprocess.CalledProcessError as error:
+        raise TechnicalError(_ERROR_LINKING, error.stderr.decode('UTF-8'))
 
     os.chdir(config[keys.ROOT])
 

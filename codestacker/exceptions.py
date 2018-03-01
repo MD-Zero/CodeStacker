@@ -25,7 +25,7 @@ class Error(Exception):
         Logger.error(self.__class__.__name__ + ': ' + self.message)
 
         if self.details is not None:
-            print(self.details)
+            print(self.details.rstrip('\n'))
 
 ####################################################################################################
 
