@@ -13,7 +13,7 @@ def clean(config):
     """
     import os
 
-    from .       import cache_builder, keys
+    from .       import keys
     from .logger import Logger
 
     Logger.begin('Cleaning-up')
@@ -30,9 +30,6 @@ def clean(config):
 
     # Remove the produced executable.
     _remove_file(os.path.join(config[keys.BINARY], config[keys.OUTPUT]), root)
-
-    # Remove the cache file.
-    _remove_file(os.path.join(build_dir, cache_builder.CACHE_FILENAME), root)
 
     Logger.end('Clean-up successful')
 
