@@ -62,9 +62,7 @@ def _compile(config):
     os.chdir(config[keys.BUILD])
 
     for file in files_to_compile:
-        relative_file = os.path.relpath(file, root)
-
-        Logger.info('Compiling {}...'.format(relative_file))
+        Logger.info('Compiling {}...'.format(os.path.relpath(file, root)))
 
         compile_command.extend(['-c', file])
 

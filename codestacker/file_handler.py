@@ -37,7 +37,7 @@ def load_yaml(file):
     if not content:
         raise TechnicalError(_ERROR_EMPTY_FILE)
 
-    # Transform the "list of dictionaries" into one single dictionary.
+    # Transform the "list of dicts" into one single dict.
     content = {key: value for pair in content for key, value in pair.items()}
 
     Logger.end('Success')
