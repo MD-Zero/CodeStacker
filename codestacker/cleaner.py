@@ -16,26 +16,25 @@ def clean(config):
     from .       import keys
     from .logger import Logger
 
-    Logger.begin('Cleaning-up')
+    Logger.begin('Cleaning-up...')
 
     # Dereferenced for performance.
     root = config[keys.ROOT]
-    build_dir = config[keys.BUILD]
 
-    # Remove '*.o' object files.
-    _remove_files(build_dir, '.o', root)
+    # Clean-up "build" directory.
+    _remove_files(config[keys.BUILD], root)
 
-    # Remove '*.gch' precompiled header files.
-    _remove_files(config[keys.SOURCES], '.gch', root)
+    # Clean-up "bin" directory.
+    _remove_files(config[keys.BINARY], root)
 
-    # Remove the produced executable.
-    _remove_file(os.path.join(config[keys.BINARY], config[keys.OUTPUT]), root)
+    # Clean-up "*.gch" precompiled header files.
+    _remove_files(config[keys.SOURCES], root, '.gch')
 
     Logger.end('Clean-up successful')
 
 ####################################################################################################
 
-def _remove_files(directory, extension, root):
+def _remove_files(directory, root, extension=''):
     """
     Remove all files within "directory" ending with "extension".
     """
@@ -45,21 +44,6 @@ def _remove_files(directory, extension, root):
     from .file_system import get_files
 
     for file in get_files(directory, extension):
-        Logger.info('Cleaning-up {}...'.format(os.path.relpath(file, root)))
-
-        os.remove(file)
-
-####################################################################################################
-
-def _remove_file(file, root):
-    """
-    Remove "file" in input.
-    """
-    import os
-
-    from .logger import Logger
-
-    if os.path.exists(file):
         Logger.info('Cleaning-up {}...'.format(os.path.relpath(file, root)))
 
         os.remove(file)
