@@ -15,7 +15,7 @@ def get_config(arguments):
     import os
 
     from .             import errors as E
-    from .             import keys
+    from .             import keys as K
     from .exceptions   import TechnicalError
     from .file_handler import load_yaml
 
@@ -25,8 +25,8 @@ def get_config(arguments):
         raise TechnicalError(E.CONFIG_NOT_FOUND.format(arguments['config']))
 
     # Add those special keys to the configuration, for later processing.
-    config[keys.ROOT] = os.path.realpath(os.path.dirname(arguments['file']))
-    config[keys.COMMAND] = arguments['command']
+    config[K.ROOT] = os.path.realpath(os.path.dirname(arguments['file']))
+    config[K.COMMAND] = arguments['command']
 
     return config
 
@@ -51,25 +51,25 @@ def adapt_config(config):
     """
     Adapt configuration keys to match process requirements (values, definition, etc.).
     """
-    from .       import keys
+    from .       import keys as K
     from .logger import Logger
 
     # Dereferenced for performance.
-    root = config[keys.ROOT]
+    root = config[K.ROOT]
 
     Logger.begin('Adapting configuration keys...')
 
-    _adapt_path(root, config, keys.INCLUDE)
-    _adapt_path(root, config, keys.SOURCES)
+    _adapt_path(root, config, K.INCLUDE)
+    _adapt_path(root, config, K.SOURCES)
 
-    _adapt_path(root, config, keys.BINARY, True)
-    _adapt_path(root, config, keys.BUILD, True)
+    _adapt_path(root, config, K.BINARY, True)
+    _adapt_path(root, config, K.BUILD, True)
 
-    _turn_into_set(config, keys.FLAGS)
-    _turn_into_set(config, keys.LIBRARIES)
+    _turn_into_set(config, K.FLAGS)
+    _turn_into_set(config, K.LIBRARIES)
 
     # Add this special flag to force the compiler to print its output in colors.
-    config[keys.FLAGS].add('-fdiagnostics-color=always')
+    config[K.FLAGS].add('-fdiagnostics-color=always')
 
     Logger.end('Done')
 
@@ -79,12 +79,12 @@ def run_config(config):
     """
     Run the wished configuration.
     """
-    from .        import keys
+    from .        import keys as K
     from .builder import build
     from .cleaner import clean
 
     # Dereferenced for performance.
-    command = config[keys.COMMAND]
+    command = config[K.COMMAND]
 
     if command == 'build':
         build(config)
@@ -97,18 +97,18 @@ def _check_keys(config):
     """
     Perform presence and type checks for the configuration keys' values.
     """
-    from . import keys
+    from . import keys as K
 
     # Mandatory attributes.
-    _check_key(keys.BINARY, config.get(keys.BINARY), str)
-    _check_key(keys.BUILD, config.get(keys.BUILD), str)
-    _check_key(keys.INCLUDE, config.get(keys.INCLUDE), str)
-    _check_key(keys.OUTPUT, config.get(keys.OUTPUT), str)
-    _check_key(keys.SOURCES, config.get(keys.SOURCES), str)
+    _check_key(K.BINARY, config.get(K.BINARY), str)
+    _check_key(K.BUILD, config.get(K.BUILD), str)
+    _check_key(K.INCLUDE, config.get(K.INCLUDE), str)
+    _check_key(K.OUTPUT, config.get(K.OUTPUT), str)
+    _check_key(K.SOURCES, config.get(K.SOURCES), str)
 
     # Optional attributes.
-    _check_key(keys.FLAGS, config.get(keys.FLAGS), list, True)
-    _check_key(keys.LIBRARIES, config.get(keys.LIBRARIES), list, True)
+    _check_key(K.FLAGS, config.get(K.FLAGS), list, True)
+    _check_key(K.LIBRARIES, config.get(K.LIBRARIES), list, True)
 
 ####################################################################################################
 

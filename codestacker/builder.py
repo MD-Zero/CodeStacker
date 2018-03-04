@@ -11,13 +11,13 @@ def build(config):
     """
     Build the project (compile + link).
     """
-    from .                  import keys
+    from .                  import keys as K
     from .logger            import Logger
     from .sources_inspector import validate_sources
 
     Logger.begin('Start build')
 
-    validate_sources(config[keys.INCLUDE], config[keys.SOURCES])
+    validate_sources(config[K.INCLUDE], config[K.SOURCES])
 
     _compile(config)
     _link(config)
@@ -34,7 +34,7 @@ def _compile(config):
     import subprocess
 
     from .           import errors as E
-    from .           import keys
+    from .           import keys as K
     from .exceptions import TechnicalError
     from .logger     import Logger
 
@@ -47,16 +47,16 @@ def _compile(config):
     Logger.begin('Compilation')
 
     # Dereferenced for performance.
-    root = config[keys.ROOT]
+    root = config[K.ROOT]
 
     compile_command = ['g++']
 
-    if keys.FLAGS in config:
-        compile_command.extend(config[keys.FLAGS])
+    if K.FLAGS in config:
+        compile_command.extend(config[K.FLAGS])
 
-    compile_command.extend(['-I', config[keys.INCLUDE]])
+    compile_command.extend(['-I', config[K.INCLUDE]])
 
-    os.chdir(config[keys.BUILD])
+    os.chdir(config[K.BUILD])
 
     for file in files_to_compile:
         Logger.info('Compiling {}...'.format(os.path.relpath(file, root)))
@@ -83,19 +83,19 @@ def _get_files_to_recompile(config):
     import subprocess
 
     from .            import errors as E
-    from .            import keys
+    from .            import keys as K
     from .exceptions  import TechnicalError
     from .file_system import get_files
 
     obj_timestamp = {}
 
-    for file in get_files(config[keys.BUILD], '.o'):
+    for file in get_files(config[K.BUILD], '.o'):
         obj_timestamp[os.path.basename(file)] = os.path.getmtime(file)
 
     recipes = {}
 
-    for file in get_files(config[keys.SOURCES], '.cpp'):
-        command = ['g++', '-I', config[keys.INCLUDE], '-MM', file]
+    for file in get_files(config[K.SOURCES], '.cpp'):
+        command = ['g++', '-I', config[K.INCLUDE], '-MM', file]
         recipe = ''
 
         try:
@@ -135,25 +135,25 @@ def _link(config):
     import subprocess
 
     from .            import errors as E
-    from .            import keys
+    from .            import keys as K
     from .exceptions  import TechnicalError
     from .file_system import get_files
     from .logger      import Logger
 
     Logger.begin('Linking')
 
-    os.chdir(config[keys.BINARY])
+    os.chdir(config[K.BINARY])
 
-    linking_command = ['g++', '-o', config[keys.OUTPUT], *get_files(config[keys.BUILD], '.o')]
+    linking_command = ['g++', '-o', config[K.OUTPUT], *get_files(config[K.BUILD], '.o')]
 
-    if config[keys.LIBRARIES]:
-        linking_command.extend('-l' + x for x in config[keys.LIBRARIES])
+    if config[K.LIBRARIES]:
+        linking_command.extend('-l' + x for x in config[K.LIBRARIES])
 
     try:
         subprocess.run(linking_command, stderr=subprocess.PIPE, check=True)
     except subprocess.CalledProcessError as error:
         raise TechnicalError(E.LINKING_FAILED, error.stderr.decode('UTF-8'))
 
-    os.chdir(config[keys.ROOT])
+    os.chdir(config[K.ROOT])
 
     Logger.end('Linking successful')

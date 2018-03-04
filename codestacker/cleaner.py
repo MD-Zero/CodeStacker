@@ -11,19 +11,19 @@ def clean(config):
     """
     Clean any compilation results.
     """
-    from .       import keys
+    from .       import keys as K
     from .logger import Logger
 
     Logger.begin('Cleaning-up...')
 
     # Dereferenced for performance.
-    root = config[keys.ROOT]
+    root = config[K.ROOT]
 
     # Clean-up "build" directory.
-    _remove_files(config[keys.BUILD], root)
+    _remove_files(config[K.BUILD], root)
 
     # Clean-up "bin" directory.
-    _remove_files(config[keys.BINARY], root)
+    _remove_files(config[K.BINARY], root)
 
     # Clean-up "*.gch" precompiled header files.
     # _remove_files(config[keys.SOURCES], root, '.gch')
