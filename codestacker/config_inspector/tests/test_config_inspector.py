@@ -15,8 +15,6 @@ class TestConfigInspector(unittest.TestCase):
     """
     def setUp(self):
         """Set up."""
-        import os
-
         self.config_good = {
             'binary': 'bin',
             'build': 'build',
@@ -64,7 +62,7 @@ class TestConfigInspector(unittest.TestCase):
     def test_validate_sources(self):
         """Test configuration validity."""
         from codestacker.constants                  import errors as E
-        from codestacker.exceptions                 import FunctionalError, TechnicalError
+        from codestacker.exceptions                 import FunctionalError
         from codestacker.config_inspector.validator import validate_config
 
         validate_config(self.config_good)

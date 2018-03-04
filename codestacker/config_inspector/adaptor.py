@@ -9,7 +9,7 @@ Adapt the configuration.
 
 def adapt_config(config):
     """
-    Adapt configuration keys to match process requirements (values, definition, etc.).
+    Adapt configuration to match process requirements (values, definition, etc.).
     """
     from codestacker.constants import keys as K
     from codestacker.logger    import Logger
