@@ -7,7 +7,7 @@ Directed graph scanning utilities.
 
 ####################################################################################################
 
-def is_directed_acyclic_graph(graph) -> bool:
+def is_directed_acyclic_graph(graph):
     """
     Check whether the input graph is a DAG (Directed Acyclic Graph).
     """
@@ -23,8 +23,6 @@ def is_directed_acyclic_graph(graph) -> bool:
 
         if not _go_down_and_check_cycle([node], children, graph, dead_ends, depth):
             raise GraphError(E.CYCLES_IN_GRAPH)
-
-    return True
 
 ####################################################################################################
 
