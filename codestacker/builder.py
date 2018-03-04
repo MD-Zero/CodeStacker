@@ -31,6 +31,7 @@ def _compile(config):
     Compile the source files into object files.
     """
     import os
+    import re
     import subprocess
 
     from .           import errors as E
@@ -46,29 +47,31 @@ def _compile(config):
 
     Logger.begin('Compilation')
 
-    # Dereferenced for performance.
-    root = config[K.ROOT]
-
+    # Step 1: compiler.
     compile_command = ['g++']
 
+    # Step 2: compilation flags.
     if K.FLAGS in config:
         compile_command.extend(config[K.FLAGS])
 
+    # Step 3: include directory.
     compile_command.extend(['-I', config[K.INCLUDE]])
 
-    os.chdir(config[K.BUILD])
-
     for file in files_to_compile:
-        Logger.info('Compiling {}...'.format(os.path.relpath(file, root)))
+        Logger.info('Compiling {}...'.format(os.path.relpath(file, config[K.ROOT])))
 
-        compile_command.extend(['-c', file])
+        # Step 4: source file to compile.
+        file_to_compile = ['-c', file]
+
+        target_filename = re.sub(r'.cpp$', '.o', os.path.basename(file))
+
+        # Step 5: object file to produce.
+        file_to_compile.extend(['-o', os.path.join(config[K.BUILD], target_filename)])
 
         try:
-            subprocess.run(compile_command, stderr=subprocess.PIPE, check=True)
+            subprocess.run([*compile_command, *file_to_compile], stderr=subprocess.PIPE, check=True)
         except subprocess.CalledProcessError as error:
             raise TechnicalError(E.COMPILATION_FAILED, error.stderr.decode('UTF-8'))
-
-    os.chdir(root)
 
     Logger.end('Compilation successful')
 
@@ -93,17 +96,16 @@ def _get_files_to_recompile(config) -> set:
         obj_timestamp[os.path.basename(file)] = os.path.getmtime(file)
 
     recipes = {}
+    output = ''
+    preproc_command = ['g++', '-I', config[K.INCLUDE], '-MM']
 
     for file in get_files(config[K.SOURCES], '.cpp'):
-        command = ['g++', '-I', config[K.INCLUDE], '-MM', file]
-        recipe = ''
-
         try:
-            recipe = subprocess.run(command, stdout=subprocess.PIPE, check=True)
+            output = subprocess.run([*preproc_command, file], stdout=subprocess.PIPE, check=True)
         except subprocess.CalledProcessError as error:
             raise TechnicalError(E.RECIPE_FAILED, error.stderr.decode('UTF-8'))
 
-        target, prerequisites = recipe.stdout.decode('UTF-8').split(':', 1)
+        target, prerequisites = output.stdout.decode('UTF-8').split(':', 1)
 
         prerequisites = prerequisites.replace('\\', '').split()
 
@@ -112,10 +114,10 @@ def _get_files_to_recompile(config) -> set:
     to_compile = set()
 
     for obj, file_timestamp in recipes.items():
-        # New targets.
+        # Case 1: new targets.
         if obj not in obj_timestamp:
             to_compile.update(file_timestamp.keys())
-        # Modified source files.
+        # Case 2: modified source files.
         else:
             for file, timestamp in file_timestamp.items():
                 if timestamp > obj_timestamp[obj]:
@@ -142,10 +144,14 @@ def _link(config):
 
     Logger.begin('Linking')
 
-    os.chdir(config[K.BINARY])
+    # Step 1: compiler.
+    linking_command = ['g++']
 
-    linking_command = ['g++', '-o', config[K.OUTPUT], *get_files(config[K.BUILD], '.o')]
+    # Step 2, 3: output executable and object files.
+    linking_command.extend(['-o', os.path.join(config[K.BINARY], config[K.OUTPUT])])
+    linking_command.extend(get_files(config[K.BUILD], '.o'))
 
+    # Step 4: libraries.
     if config[K.LIBRARIES]:
         linking_command.extend('-l' + x for x in config[K.LIBRARIES])
 
@@ -153,7 +159,5 @@ def _link(config):
         subprocess.run(linking_command, stderr=subprocess.PIPE, check=True)
     except subprocess.CalledProcessError as error:
         raise TechnicalError(E.LINKING_FAILED, error.stderr.decode('UTF-8'))
-
-    os.chdir(config[K.ROOT])
 
     Logger.end('Linking successful')
