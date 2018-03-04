@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-Unit test for file_handler.py module.
+Unit test for yaml_handler.py module.
 """
 
 ####################################################################################################
 
 import unittest
 
-class TestFileHandler(unittest.TestCase):
+class TestYamlHandler(unittest.TestCase):
     """
     Test class.
     """
@@ -26,9 +26,9 @@ class TestFileHandler(unittest.TestCase):
 
     def test_all_cases(self):
         """Test all blueprints."""
-        from codestacker.constants    import errors as E
-        from codestacker.exceptions   import TechnicalError
-        from codestacker.file_handler import load_yaml
+        from codestacker.constants           import errors as E
+        from codestacker.exceptions          import TechnicalError
+        from codestacker.system.yaml_handler import load_yaml
 
         load_yaml(self.blueprint_good)
 

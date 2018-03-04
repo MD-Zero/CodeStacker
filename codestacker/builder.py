@@ -11,9 +11,9 @@ def build(config):
     """
     Build the project (compile + link).
     """
-    from .constants         import keys as K
-    from .logger            import Logger
-    from .sources_inspector import validate_sources
+    from .constants        import keys as K
+    from .logger           import Logger
+    from .system.utilities import validate_sources
 
     Logger.begin('Start build')
 
@@ -89,9 +89,9 @@ def _get_files_to_recompile(config) -> set:
     import os
     import subprocess
 
-    from .constants   import errors as E, keys as K
-    from .exceptions  import TechnicalError
-    from .file_system import get_files
+    from .constants        import errors as E, keys as K
+    from .exceptions       import TechnicalError
+    from .system.utilities import get_files
 
     obj_timestamp = {}
 
@@ -139,10 +139,10 @@ def _link(config):
     import os
     import subprocess
 
-    from .constants   import errors as E, keys as K
-    from .exceptions  import TechnicalError
-    from .file_system import get_files
-    from .logger      import Logger
+    from .constants        import errors as E, keys as K
+    from .exceptions       import TechnicalError
+    from .logger           import Logger
+    from .system.utilities import get_files
 
     Logger.begin('Linking')
 

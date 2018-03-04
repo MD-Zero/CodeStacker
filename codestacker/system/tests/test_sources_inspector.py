@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-Unit test for sources_inspector.py module.
+Unit test for utilities.py module.
 """
 
 ####################################################################################################
 
 import unittest
 
-class TestSourcesInspector(unittest.TestCase):
+class TestUitilites(unittest.TestCase):
     """
     Test class.
     """
@@ -22,9 +22,9 @@ class TestSourcesInspector(unittest.TestCase):
 
     def test_validate_sources(self):
         """Test sources validity."""
-        from codestacker.constants         import errors as E
-        from codestacker.exceptions        import TechnicalError
-        from codestacker.sources_inspector import validate_sources
+        from codestacker.constants        import errors as E
+        from codestacker.exceptions       import TechnicalError
+        from codestacker.system.utilities import validate_sources
 
         with self.assertRaises(TechnicalError) as context:
             validate_sources(self.source_dir, self.source_dir)

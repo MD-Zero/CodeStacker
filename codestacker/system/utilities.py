@@ -2,8 +2,25 @@
 # -*- coding: utf-8 -*-
 
 """
-Sources inspector module: validate the correctness of source files.
+File system utilities.
 """
+
+####################################################################################################
+
+def get_files(directory, extension) -> list:
+    """
+    Gather all the files ending with "extension" in the given directory and descendants.
+    """
+    import os
+
+    all_files = []
+
+    for current_dir, dirs, files in os.walk(directory):
+        for file in files:
+            if file.endswith(extension):
+                all_files.append(os.path.join(current_dir, file))
+
+    return all_files
 
 ####################################################################################################
 
@@ -11,7 +28,7 @@ def validate_sources(include_dir, sources_dir):
     """
     Check if headers and sources filenames are valid.
     """
-    from .logger import Logger
+    from codestacker.logger import Logger
 
     Logger.begin('Checking headers and sources...')
 
@@ -29,9 +46,8 @@ def _check_directory(directory, file_extension):
     import os
     import re
 
-    from .constants   import errors as E
-    from .exceptions  import TechnicalError
-    from .file_system import get_files
+    from codestacker.constants  import errors as E
+    from codestacker.exceptions import TechnicalError
 
     for file in get_files(directory, file_extension):
         filename = os.path.basename(file)

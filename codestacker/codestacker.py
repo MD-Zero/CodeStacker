@@ -61,9 +61,9 @@ def get_config(arguments) -> dict:
     """
     import os
 
-    from .constants    import errors as E, keys as K
-    from .exceptions   import TechnicalError
-    from .file_handler import load_yaml
+    from .constants           import errors as E, keys as K
+    from .exceptions          import TechnicalError
+    from .system.yaml_handler import load_yaml
 
     config = load_yaml(arguments['file']).get(arguments['config'])
 

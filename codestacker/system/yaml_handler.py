@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-File handling utility.
+YAML file handling utilities.
 """
 
 ####################################################################################################
@@ -14,9 +14,9 @@ def load_yaml(file) -> dict:
     import os
     import yaml
 
-    from .constants  import errors as E
-    from .exceptions import TechnicalError
-    from .logger     import Logger
+    from codestacker.constants  import errors as E
+    from codestacker.exceptions import TechnicalError
+    from codestacker.logger     import Logger
 
     Logger.begin('Reading "{}" file...'.format(os.path.relpath(file)))
 
@@ -49,8 +49,8 @@ def dump_yaml(content, file):
     """
     import yaml
 
-    from .constants  import errors as E
-    from .exceptions import TechnicalError
+    from codestacker.constants  import errors as E
+    from codestacker.exceptions import TechnicalError
 
     try:
         with open(file, 'w') as stream:
