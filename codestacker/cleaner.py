@@ -11,8 +11,6 @@ def clean(config):
     """
     Clean any compilation results.
     """
-    import os
-
     from .       import keys
     from .logger import Logger
 
@@ -28,22 +26,36 @@ def clean(config):
     _remove_files(config[keys.BINARY], root)
 
     # Clean-up "*.gch" precompiled header files.
-    _remove_files(config[keys.SOURCES], root, '.gch')
+    # _remove_files(config[keys.SOURCES], root, '.gch')
 
     Logger.end('Clean-up successful')
 
 ####################################################################################################
 
-def _remove_files(directory, root, extension=''):
+_ERROR_REMOVAL_FAILED = 'impossible to remove "{}"'
+
+def _remove_files(directory, root):
     """
-    Remove all files within "directory" ending with "extension".
+    Remove all files within "directory".
     """
     import os
+    import shutil
 
-    from .logger      import Logger
-    from .file_system import get_files
+    from .exceptions import TechnicalError
+    from .logger     import Logger
 
-    for file in get_files(directory, extension):
-        Logger.info('Cleaning-up {}...'.format(os.path.relpath(file, root)))
+    with os.scandir(directory) as entries:
+        for entry in entries:
+            abs_entry = os.path.join(directory, entry)
 
-        os.remove(file)
+            Logger.info('Cleaning-up {}...'.format(os.path.relpath(abs_entry, root)))
+
+            try:
+                if os.path.isfile(abs_entry):
+                    os.unlink(abs_entry)
+                elif os.path.isdir(abs_entry):
+                    shutil.rmtree(abs_entry)
+                else:
+                    Logger.warning('"{}" neither file nor directory: skipped'.format(abs_entry))
+            except Exception as error:
+                raise TechnicalError(_ERROR_REMOVAL_FAILED.format(abs_entry), error)
