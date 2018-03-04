@@ -63,9 +63,9 @@ class TestConfigInspector(unittest.TestCase):
 
     def test_validate_sources(self):
         """Test configuration validity."""
-        from codestacker                  import errors as E
-        from codestacker.exceptions       import FunctionalError, TechnicalError
-        from codestacker.config_inspector import validate_config
+        from codestacker                            import errors as E
+        from codestacker.exceptions                 import FunctionalError, TechnicalError
+        from codestacker.config_inspector.validator import validate_config
 
         validate_config(self.config_good)
 

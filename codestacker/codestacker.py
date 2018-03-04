@@ -19,10 +19,13 @@ def main():
     """
     import traceback
 
-    from .args_parser      import parse_args
-    from .config_inspector import adapt_config, get_config, run_config, validate_config
-    from .exceptions       import Error
-    from .logger           import Logger
+    from .args_parser                import parse_args
+    from .builder                    import build
+    from .cleaner                    import clean
+    from .config_inspector.adaptor   import adapt_config
+    from .config_inspector.validator import validate_config
+    from .exceptions                 import Error
+    from .logger                     import Logger
 
     arguments = parse_args()
 
@@ -31,7 +34,13 @@ def main():
 
         validate_config(config)
         adapt_config(config)
-        run_config(config)
+
+        command = config['_command']
+
+        if command == 'build':
+            build(config)
+        elif command == 'clean':
+            clean(config)
     except Error as error:
         error.print()
     except KeyboardInterrupt:
@@ -39,3 +48,31 @@ def main():
         Logger.error('Keyboard interruption: stopping')
     except BaseException:
         traceback.print_exc()
+
+####################################################################################################
+
+####################################################################################################
+############################################## TEMP ################################################
+####################################################################################################
+def get_config(arguments) -> dict:
+    """
+    From the arguments in input, load the YAML configuration file, extract the wished configuration
+    and return it.
+    """
+    import os
+
+    from .             import errors as E
+    from .             import keys as K
+    from .exceptions   import TechnicalError
+    from .file_handler import load_yaml
+
+    config = load_yaml(arguments['file']).get(arguments['config'])
+
+    if config is None:
+        raise TechnicalError(E.CONFIG_NOT_FOUND.format(arguments['config']))
+
+    # Add those special keys to the configuration, for later processing.
+    config[K.ROOT] = os.path.realpath(os.path.dirname(arguments['file']))
+    config[K.COMMAND] = arguments['command']
+
+    return config
