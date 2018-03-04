@@ -9,7 +9,7 @@ Unit test for utilities.py module.
 
 import unittest
 
-class TestUitilites(unittest.TestCase):
+class TestUtilities(unittest.TestCase):
     """
     Test class.
     """
@@ -18,7 +18,6 @@ class TestUitilites(unittest.TestCase):
         import os
 
         self.source_dir = os.path.join(os.path.dirname(__file__), 'resources')
-        self.source_bad = 'Bad# .cpp'
 
     def test_validate_sources(self):
         """Test sources validity."""
@@ -29,7 +28,7 @@ class TestUitilites(unittest.TestCase):
         with self.assertRaises(TechnicalError) as context:
             validate_sources(self.source_dir, self.source_dir)
 
-        self.assertEqual(context.exception.message, E.INVALID_FILENAME.format(self.source_bad))
+        self.assertEqual(context.exception.message, E.INVALID_FILENAME.format('Bad# .cpp'))
 
 ####################################################################################################
 
