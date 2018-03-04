@@ -22,8 +22,6 @@ def validate_sources(include_dir, sources_dir):
 
 ####################################################################################################
 
-_ERROR_INVALID_FILE = 'file "{}" doesn\'t match filenames requirements'
-
 def _check_directory(directory, file_extension):
     """
     Check the directory's content, for all files ending with "file_extension".
@@ -31,6 +29,7 @@ def _check_directory(directory, file_extension):
     import os
     import re
 
+    from .            import errors as E
     from .exceptions  import TechnicalError
     from .file_system import get_files
 
@@ -38,4 +37,4 @@ def _check_directory(directory, file_extension):
         filename = os.path.basename(file)
 
         if re.search(r'^\w+{}$'.format(file_extension), filename) is None:
-            raise TechnicalError(_ERROR_INVALID_FILE.format(filename))
+            raise TechnicalError(E.INVALID_FILENAME.format(filename))
