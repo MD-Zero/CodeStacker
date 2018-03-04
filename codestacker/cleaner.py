@@ -32,8 +32,6 @@ def clean(config):
 
 ####################################################################################################
 
-_ERROR_REMOVAL_FAILED = 'impossible to remove "{}"'
-
 def _remove_files(directory, root):
     """
     Remove all files within "directory".
@@ -41,6 +39,7 @@ def _remove_files(directory, root):
     import os
     import shutil
 
+    from .           import errors as E
     from .exceptions import TechnicalError
     from .logger     import Logger
 
@@ -58,4 +57,4 @@ def _remove_files(directory, root):
                 else:
                     Logger.warning('"{}" neither file nor directory: skipped'.format(abs_entry))
             except Exception as error:
-                raise TechnicalError(_ERROR_REMOVAL_FAILED.format(abs_entry), error)
+                raise TechnicalError(E.REMOVAL_FAILED.format(abs_entry), error)

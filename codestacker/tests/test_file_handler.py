@@ -26,6 +26,7 @@ class TestFileHandler(unittest.TestCase):
 
     def test_all_cases(self):
         """Test all blueprints."""
+        from codestacker              import errors as E
         from codestacker.exceptions   import TechnicalError
         from codestacker.file_handler import load_yaml
 
@@ -34,17 +35,17 @@ class TestFileHandler(unittest.TestCase):
         with self.assertRaises(TechnicalError) as context:
             load_yaml(self.blueprint_nonexistent)
 
-        self.assertEqual(context.exception.message, 'file reading error')
+        self.assertEqual(context.exception.message, E.FILE_READING)
 
         with self.assertRaises(TechnicalError) as context:
             load_yaml(self.blueprint_bad)
 
-        self.assertEqual(context.exception.message, 'YAML parsing error')
+        self.assertEqual(context.exception.message, E.YAML_PARSING)
 
         with self.assertRaises(TechnicalError) as context:
             load_yaml(self.blueprint_empty)
 
-        self.assertEqual(context.exception.message, 'empty YAML file')
+        self.assertEqual(context.exception.message, E.EMPTY_YAML)
 
 ####################################################################################################
 

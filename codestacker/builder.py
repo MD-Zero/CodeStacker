@@ -26,8 +26,6 @@ def build(config):
 
 ####################################################################################################
 
-_ERROR_COMPILATION = 'compilation failed'
-
 def _compile(config):
     """
     Compile the source files into object files.
@@ -35,6 +33,7 @@ def _compile(config):
     import os
     import subprocess
 
+    from .           import errors as E
     from .           import keys
     from .exceptions import TechnicalError
     from .logger     import Logger
@@ -67,15 +66,13 @@ def _compile(config):
         try:
             subprocess.run(compile_command, stderr=subprocess.PIPE, check=True)
         except subprocess.CalledProcessError as error:
-            raise TechnicalError(_ERROR_COMPILATION, error.stderr.decode('UTF-8'))
+            raise TechnicalError(E.COMPILATION_FAILED, error.stderr.decode('UTF-8'))
 
     os.chdir(root)
 
     Logger.end('Compilation successful')
 
 ####################################################################################################
-
-_ERROR_RECIPE = 'recipe creation failed'
 
 def _get_files_to_recompile(config):
     """
@@ -85,6 +82,7 @@ def _get_files_to_recompile(config):
     import os
     import subprocess
 
+    from .            import errors as E
     from .            import keys
     from .exceptions  import TechnicalError
     from .file_system import get_files
@@ -103,7 +101,7 @@ def _get_files_to_recompile(config):
         try:
             recipe = subprocess.run(command, stdout=subprocess.PIPE, check=True)
         except subprocess.CalledProcessError as error:
-            raise TechnicalError(_ERROR_RECIPE, error.stderr.decode('UTF-8'))
+            raise TechnicalError(E.RECIPE_FAILED, error.stderr.decode('UTF-8'))
 
         target, prerequisites = recipe.stdout.decode('UTF-8').split(':', 1)
 
@@ -129,8 +127,6 @@ def _get_files_to_recompile(config):
 
 ####################################################################################################
 
-_ERROR_LINKING = 'linking failed'
-
 def _link(config):
     """
     Link the object files into an executable.
@@ -138,6 +134,7 @@ def _link(config):
     import os
     import subprocess
 
+    from .            import errors as E
     from .            import keys
     from .exceptions  import TechnicalError
     from .file_system import get_files
@@ -155,7 +152,7 @@ def _link(config):
     try:
         subprocess.run(linking_command, stderr=subprocess.PIPE, check=True)
     except subprocess.CalledProcessError as error:
-        raise TechnicalError(_ERROR_LINKING, error.stderr.decode('UTF-8'))
+        raise TechnicalError(E.LINKING_FAILED, error.stderr.decode('UTF-8'))
 
     os.chdir(config[keys.ROOT])
 

@@ -7,8 +7,6 @@ YAML configuration file inspector.
 
 ####################################################################################################
 
-_ERROR_NO_CONFIG = 'configuration "{}" not found'
-
 def get_config(arguments):
     """
     From the arguments in input, load the YAML configuration file, extract the wished configuration
@@ -16,6 +14,7 @@ def get_config(arguments):
     """
     import os
 
+    from .             import errors as E
     from .             import keys
     from .exceptions   import TechnicalError
     from .file_handler import load_yaml
@@ -23,7 +22,7 @@ def get_config(arguments):
     config = load_yaml(arguments['file']).get(arguments['config'])
 
     if config is None:
-        raise TechnicalError(_ERROR_NO_CONFIG.format(arguments['config']))
+        raise TechnicalError(E.CONFIG_NOT_FOUND.format(arguments['config']))
 
     # Add those special keys to the configuration, for later processing.
     config[keys.ROOT] = os.path.realpath(os.path.dirname(arguments['file']))
@@ -113,27 +112,21 @@ def _check_keys(config):
 
 ####################################################################################################
 
-_ERROR_KEY_INCORRECT = 'key "{}" is of incorrect type (should be "{}")'
-_ERROR_KEY_MISSING = 'missing mandatory "{}" key'
-
 def _check_key(key, value, key_type, optional=False):
     """
     Perform presence and type checks for mandatory and optional configuration keys.
     """
+    from .           import errors as E
     from .exceptions import FunctionalError
 
     if (value is None) and (not optional):
-        raise FunctionalError(_ERROR_KEY_MISSING.format(key))
+        raise FunctionalError(E.MISSING_KEY.format(key))
     elif (value is not None) and (not isinstance(value, key_type)):
-        raise FunctionalError(_ERROR_KEY_INCORRECT.format(key, key_type.__name__))
+        raise FunctionalError(E.INCORRECT_KEY_TYPE.format(key, key_type.__name__))
 
 ####################################################################################################
 
 _REGEX_VAR = r'\$(\w+)'
-
-_ERROR_VAR_UNDEFINED = 'variable "{}" is undefined'
-_ERROR_VAR_TYPE = 'variable "{}" is not of type "str"'
-_ERROR_VAR_GRAPH = 'error in variables references ({})'
 
 def _check_and_substitute_vars(config):
     """
@@ -142,6 +135,7 @@ def _check_and_substitute_vars(config):
     """
     import re
 
+    from .            import errors as E
     from .exceptions  import GraphError, TechnicalError, FunctionalError
     from .graph_tools import is_directed_acyclic_graph, get_topological_ordering
 
@@ -152,9 +146,9 @@ def _check_and_substitute_vars(config):
 
         for var in re.findall(_REGEX_VAR, value):
             if var not in config:
-                raise FunctionalError(_ERROR_VAR_UNDEFINED.format(var))
+                raise FunctionalError(E.UNDEFINED_VAR.format(var))
             elif not isinstance(config[var], str):
-                raise FunctionalError(_ERROR_VAR_TYPE.format(var))
+                raise FunctionalError(E.WRONG_VAR_TYPE.format(var))
 
     # Gather all variables in one place.
     all_vars = {}
@@ -169,7 +163,7 @@ def _check_and_substitute_vars(config):
     try:
         is_directed_acyclic_graph(all_vars)
     except GraphError as error:
-        raise TechnicalError(_ERROR_VAR_GRAPH.format(error.message))
+        raise TechnicalError(E.ERROR_VAR_GRAPH.format(error.message))
 
     # Based on their topological ordering, proceed with the substitutions.
     for var in get_topological_ordering(all_vars):
@@ -181,13 +175,12 @@ def _check_and_substitute_vars(config):
 
 ####################################################################################################
 
-_ERROR_FOLDER_NOT_FOUND = 'folder "{}" is nonexistent'
-
 def _adapt_path(root, config, key, should_create=False):
     """
     """
     import os
 
+    from .           import errors as E
     from .exceptions import TechnicalError
     from .logger     import Logger
 
@@ -195,7 +188,7 @@ def _adapt_path(root, config, key, should_create=False):
 
     if not os.path.exists(abs_path):
         if not should_create:
-            raise TechnicalError(_ERROR_FOLDER_NOT_FOUND.format(abs_path))
+            raise TechnicalError(E.FOLDER_NOT_FOUND.format(abs_path))
         else:
             Logger.warning('Folder "{}" not found: creating it...'.format(abs_path))
 
