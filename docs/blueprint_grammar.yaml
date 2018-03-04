@@ -13,12 +13,12 @@ config-name:
 # One can define many configuration in a single blueprint file.
 release:
   # Other keys can be defined by the user, for the sake of variables substitution, notably.
-  # Variables must be referenced in the following fashion: "${var_name}".
+  # Variables must be referenced in the following fashion: "$var_name".
   root: project
-  binary: ${project}/bin
-  build: ${project}/build
-  include: ${project}/include
-  sources: ${project}/src
+  binary: $project/bin
+  build: $project/build
+  include: $project/include
+  sources: $project/src
   output: Test
   flags: [-pedantic-errors]
   libraries: [xml2]
