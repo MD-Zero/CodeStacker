@@ -20,10 +20,17 @@ INCORRECT_KEY_TYPE = 'key "{}" is of incorrect type (should be "{}")'
 MISSING_KEY = 'missing mandatory "{}" key'
 
 ERROR_VAR_GRAPH = 'error in variables references ({})'
-UNDEFINED_VAR = 'variable "{}" is undefined'
-WRONG_VAR_TYPE = 'variable "{}" is not of type "str"'
+UNDEFINED_VAR = '"${}" is undefined'
+WRONG_VAR_TYPE = '"${}" is not of type "str"'
 
 FOLDER_NOT_FOUND = 'folder "{}" is nonexistent'
+
+# Graph errors.
+CYCLES_IN_GRAPH = 'cycle(s) in graph detected'
+DEPTH_THRESHOLD = 'depth threshold exceeded'
+
+# Sources inspection errors.
+INVALID_FILENAME = 'file "{}" doesn\'t match filenames requirements'
 
 # Build / link errors.
 COMPILATION_FAILED = 'compilation failed'
@@ -32,10 +39,3 @@ RECIPE_FAILED = 'recipe creation failed'
 
 # Clean-up errors.
 REMOVAL_FAILED = 'impossible to remove "{}"'
-
-# Graph errors.
-CYCLES_IN_GRAPH = 'cycle(s) in graph detected'
-DEPTH_THRESHOLD = 'depth threshold exceeded'
-
-# Sources inspection errors.
-INVALID_FILENAME = 'file "{}" doesn\'t match filenames requirements'
