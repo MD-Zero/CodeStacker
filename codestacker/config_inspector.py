@@ -7,7 +7,7 @@ YAML configuration file inspector.
 
 ####################################################################################################
 
-def get_config(arguments):
+def get_config(arguments) -> dict:
     """
     From the arguments in input, load the YAML configuration file, extract the wished configuration
     and return it.
@@ -177,6 +177,9 @@ def _check_and_substitute_vars(config):
 
 def _adapt_path(root, config, key, should_create=False):
     """
+    Check if directory for the given exist:
+        - raise an error if absent and mandatory;
+        - create it if optional.
     """
     import os
 

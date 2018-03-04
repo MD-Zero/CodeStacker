@@ -7,7 +7,7 @@ Directed graph scanning utilities.
 
 ####################################################################################################
 
-def is_directed_acyclic_graph(graph):
+def is_directed_acyclic_graph(graph) -> bool:
     """
     Check whether the input graph is a DAG (Directed Acyclic Graph).
     """
@@ -28,7 +28,7 @@ def is_directed_acyclic_graph(graph):
 
 ####################################################################################################
 
-def get_topological_ordering(graph):
+def get_topological_ordering(graph) -> list:
     """
     Given a directed graph in input, return the topological ordering of its nodes.
     """
@@ -60,7 +60,7 @@ def get_topological_ordering(graph):
 
 ####################################################################################################
 
-def _go_down_and_check_cycle(visited_nodes, children, graph, dead_ends, depth):
+def _go_down_and_check_cycle(visited_nodes, children, graph, dead_ends, depth) -> bool:
     """
     Given a start node, visit all its descendants, looking for a cycle.
     """

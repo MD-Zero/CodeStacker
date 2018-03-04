@@ -12,9 +12,9 @@ _FILE_DESC = '''specify the blueprint file to use;
 _CONF_DESC = '''specify the configuration to use;
                 if not specified, the configuration "default" will be used, if it exists'''
 
-def parse_args():
+def parse_args() -> dict:
     """
-    Parse the command line's arguments, and return its content as a dictionary.
+    Parse the command line's arguments, and return its content.
     """
     import argparse
     import sys

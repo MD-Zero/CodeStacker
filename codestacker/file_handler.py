@@ -7,7 +7,7 @@ File handling utility.
 
 ####################################################################################################
 
-def load_yaml(file):
+def load_yaml(file) -> dict:
     """
     Read a YAML file and return its content as a list of dictionaries.
     """
