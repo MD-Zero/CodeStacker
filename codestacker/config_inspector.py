@@ -68,9 +68,6 @@ def adapt_config(config):
     _turn_into_set(config, K.FLAGS)
     _turn_into_set(config, K.LIBRARIES)
 
-    # Add this special flag to force the compiler to print its output in colors.
-    config[K.FLAGS].add('-fdiagnostics-color=always')
-
     Logger.end('Done')
 
 ####################################################################################################

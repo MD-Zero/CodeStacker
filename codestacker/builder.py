@@ -26,6 +26,8 @@ def build(config):
 
 ####################################################################################################
 
+_SPECIAL_FLAG = '-fdiagnostics-color=always'
+
 def _compile(config):
     """
     Compile the source files into object files.
@@ -51,8 +53,11 @@ def _compile(config):
     compile_command = ['g++']
 
     # Step 2: compilation flags.
-    if K.FLAGS in config:
-        compile_command.extend(config[K.FLAGS])
+    compile_command.extend(config[K.FLAGS])
+
+    # Add this special flag to force the compiler to print its output in colors.
+    if _SPECIAL_FLAG not in compile_command:
+        compile_command.append(_SPECIAL_FLAG)
 
     # Step 3: include directory.
     compile_command.extend(['-I', config[K.INCLUDE]])
