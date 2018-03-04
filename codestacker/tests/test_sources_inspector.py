@@ -18,8 +18,6 @@ class TestSourcesInspector(unittest.TestCase):
         import os
 
         self.source_dir = os.path.join(os.path.dirname(__file__), 'resources')
-
-        self.source_good = 'Good.hpp'
         self.source_bad = 'Bad# .cpp'
 
     def test_validate_sources(self):
