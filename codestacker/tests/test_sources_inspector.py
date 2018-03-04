@@ -22,7 +22,7 @@ class TestSourcesInspector(unittest.TestCase):
 
     def test_validate_sources(self):
         """Test sources validity."""
-        from codestacker                   import errors as E
+        from codestacker.constants         import errors as E
         from codestacker.exceptions        import TechnicalError
         from codestacker.sources_inspector import validate_sources
 

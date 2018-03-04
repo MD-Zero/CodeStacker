@@ -14,7 +14,7 @@ def load_yaml(file) -> dict:
     import os
     import yaml
 
-    from .           import errors as E
+    from .constants  import errors as E
     from .exceptions import TechnicalError
     from .logger     import Logger
 
@@ -49,7 +49,7 @@ def dump_yaml(content, file):
     """
     import yaml
 
-    from .           import errors as E
+    from .constants  import errors as E
     from .exceptions import TechnicalError
 
     try:

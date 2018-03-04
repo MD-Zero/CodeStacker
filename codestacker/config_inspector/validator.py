@@ -26,7 +26,7 @@ def _check_keys(config):
     """
     Perform presence and type checks for the configuration keys' values.
     """
-    from codestacker import keys as K
+    from codestacker.constants import keys as K
 
     # Mandatory attributes.
     _check_key(K.BINARY, config.get(K.BINARY), str)
@@ -45,7 +45,7 @@ def _check_key(key, value, key_type, optional=False):
     """
     Perform presence and type checks for mandatory and optional configuration keys.
     """
-    from codestacker            import errors as E
+    from codestacker.constants  import errors as E
     from codestacker.exceptions import FunctionalError
 
     if (value is None) and (not optional):
@@ -64,7 +64,7 @@ def _check_and_substitute_vars(config):
     """
     import re
 
-    from codestacker             import errors as E
+    from codestacker.constants   import errors as E
     from codestacker.exceptions  import GraphError, TechnicalError, FunctionalError
     from codestacker.graph_tools import is_directed_acyclic_graph, get_topological_ordering
 

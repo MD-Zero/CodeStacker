@@ -11,8 +11,8 @@ def adapt_config(config):
     """
     Adapt configuration keys to match process requirements (values, definition, etc.).
     """
-    from codestacker        import keys as K
-    from codestacker.logger import Logger
+    from codestacker.constants import keys as K
+    from codestacker.logger    import Logger
 
     # Dereferenced for performance.
     root = config[K.ROOT]
@@ -40,7 +40,7 @@ def _adapt_path(root, config, key, should_create=False):
     """
     import os
 
-    from codestacker            import errors as E
+    from codestacker.constants  import errors as E
     from codestacker.exceptions import TechnicalError
     from codestacker.logger     import Logger
 

@@ -11,7 +11,7 @@ def is_directed_acyclic_graph(graph):
     """
     Check whether the input graph is a DAG (Directed Acyclic Graph).
     """
-    from .           import errors as E
+    from .constants  import errors as E
     from .exceptions import GraphError
 
     dead_ends = set()
@@ -62,7 +62,7 @@ def _go_down_and_check_cycle(visited_nodes, children, graph, dead_ends, depth) -
     """
     Given a start node, visit all its descendants, looking for a cycle.
     """
-    from .           import errors as E
+    from .constants  import errors as E
     from .exceptions import GraphError
 
     depth += 1

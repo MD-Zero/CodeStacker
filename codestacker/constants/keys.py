@@ -5,9 +5,11 @@
 Configuration keys.
 """
 
+# Special keys.
 ROOT = '_root'
 COMMAND = '_command'
 
+# Common keys.
 BINARY = 'binary'
 BUILD = 'build'
 FLAGS = 'flags'

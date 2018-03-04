@@ -26,7 +26,7 @@ class TestFileHandler(unittest.TestCase):
 
     def test_all_cases(self):
         """Test all blueprints."""
-        from codestacker              import errors as E
+        from codestacker.constants    import errors as E
         from codestacker.exceptions   import TechnicalError
         from codestacker.file_handler import load_yaml
 

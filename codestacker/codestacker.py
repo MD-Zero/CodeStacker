@@ -61,8 +61,7 @@ def get_config(arguments) -> dict:
     """
     import os
 
-    from .             import errors as E
-    from .             import keys as K
+    from .constants    import errors as E, keys as K
     from .exceptions   import TechnicalError
     from .file_handler import load_yaml
 

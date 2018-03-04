@@ -41,7 +41,7 @@ class TestGraphTools(unittest.TestCase):
 
     def test_is_directed_acyclic_graph(self):
         """Test DAG detection."""
-        from codestacker             import errors as E
+        from codestacker.constants   import errors as E
         from codestacker.exceptions  import GraphError
         from codestacker.graph_tools import is_directed_acyclic_graph
 

@@ -11,7 +11,7 @@ def build(config):
     """
     Build the project (compile + link).
     """
-    from .                  import keys as K
+    from .constants         import keys as K
     from .logger            import Logger
     from .sources_inspector import validate_sources
 
@@ -36,8 +36,7 @@ def _compile(config):
     import re
     import subprocess
 
-    from .           import errors as E
-    from .           import keys as K
+    from .constants  import errors as E, keys as K
     from .exceptions import TechnicalError
     from .logger     import Logger
 
@@ -90,8 +89,7 @@ def _get_files_to_recompile(config) -> set:
     import os
     import subprocess
 
-    from .            import errors as E
-    from .            import keys as K
+    from .constants   import errors as E, keys as K
     from .exceptions  import TechnicalError
     from .file_system import get_files
 
@@ -141,8 +139,7 @@ def _link(config):
     import os
     import subprocess
 
-    from .            import errors as E
-    from .            import keys as K
+    from .constants   import errors as E, keys as K
     from .exceptions  import TechnicalError
     from .file_system import get_files
     from .logger      import Logger

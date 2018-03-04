@@ -29,7 +29,7 @@ def _check_directory(directory, file_extension):
     import os
     import re
 
-    from .            import errors as E
+    from .constants   import errors as E
     from .exceptions  import TechnicalError
     from .file_system import get_files
 

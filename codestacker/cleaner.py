@@ -11,8 +11,8 @@ def clean(config):
     """
     Clean any compilation results.
     """
-    from .       import keys as K
-    from .logger import Logger
+    from .constants import keys as K
+    from .logger    import Logger
 
     Logger.begin('Cleaning-up...')
 
@@ -39,7 +39,7 @@ def _remove_files(directory, root):
     import os
     import shutil
 
-    from .           import errors as E
+    from .constants  import errors as E
     from .exceptions import TechnicalError
     from .logger     import Logger
 
