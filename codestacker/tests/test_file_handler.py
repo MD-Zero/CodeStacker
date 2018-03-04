@@ -19,13 +19,13 @@ class TestFileHandler(unittest.TestCase):
 
         current_dir = os.path.dirname(__file__)
 
-        self.blueprint_good = os.path.join(current_dir, 'blueprints/blueprint_good.yaml')
-        self.blueprint_nonexistent = os.path.join(current_dir, 'blueprints/#dummy123.yaml')
-        self.blueprint_bad = os.path.join(current_dir, 'blueprints/blueprint_bad.yaml')
-        self.blueprint_empty = os.path.join(current_dir, 'blueprints/blueprint_empty.yaml')
+        self.blueprint_good = os.path.join(current_dir, 'resources/blueprint_good.yaml')
+        self.blueprint_nonexistent = os.path.join(current_dir, 'resources/#dummy123.yaml')
+        self.blueprint_bad = os.path.join(current_dir, 'resources/blueprint_bad.yaml')
+        self.blueprint_empty = os.path.join(current_dir, 'resources/blueprint_empty.yaml')
 
-    def test_blueprints(self):
-        """Test all blueprint."""
+    def test_all_cases(self):
+        """Test all blueprints."""
         from codestacker.exceptions   import TechnicalError
         from codestacker.file_handler import load_yaml
 
