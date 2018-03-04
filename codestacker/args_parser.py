@@ -7,6 +7,11 @@ Argument parsing utility.
 
 ####################################################################################################
 
+_FILE_DESC = '''specify the blueprint file to use;
+                if not specified, the file "blueprint.yaml" will be used, if it exists'''
+_CONF_DESC = '''specify the configuration to use;
+                if not specified, the configuration "default" will be used, if it exists'''
+
 def parse_args():
     """
     Parse the command line's arguments, and return its content as a dictionary.
@@ -17,13 +22,8 @@ def parse_args():
     parser = argparse.ArgumentParser(prog='codestacker')
     sub_parser = parser.add_subparsers(dest='command')
 
-    parser.add_argument(
-        '-f', '--file',
-        default='blueprint.yaml', help='specify the blueprint file to use')
-
-    parser.add_argument(
-        '-c', '--config',
-        default='default', help='specify the configuration to use')
+    parser.add_argument('-f', dest='file', default='blueprint.yaml', help=_FILE_DESC)
+    parser.add_argument('-c', dest='config', default='default', help=_CONF_DESC)
 
     # 'clean' argument.
     sub_parser.add_parser('clean', help='clean the compilation results')
