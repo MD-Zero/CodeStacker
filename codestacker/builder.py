@@ -11,18 +11,32 @@ def build(config):
     """
     Build the project (compile + link).
     """
-    from .constants        import keys as K
-    from .logger           import Logger
-    from .system.utilities import validate_sources
+    from .logger import Logger
 
     Logger.begin('Start build')
 
-    validate_sources(config[K.INCLUDE], config[K.SOURCES])
-
+    _validate_sources(config)
     _compile(config)
     _link(config)
 
     Logger.end('Build successful')
+
+####################################################################################################
+
+def _validate_sources(config):
+    """
+    Check if headers and sources filenames are valid.
+    """
+    from .constants        import keys as K
+    from .logger           import Logger
+    from .system.utilities import check_files
+
+    Logger.begin('Checking headers and sources...')
+
+    check_files(config[K.INCLUDE], '.hpp')
+    check_files(config[K.SOURCES], '.cpp')
+
+    Logger.end('Headers and sources valid')
 
 ####################################################################################################
 

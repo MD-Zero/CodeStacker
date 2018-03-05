@@ -24,22 +24,7 @@ def get_files(directory, extension) -> list:
 
 ####################################################################################################
 
-def validate_sources(include_dir, sources_dir):
-    """
-    Check if headers and sources filenames are valid.
-    """
-    from codestacker.logger import Logger
-
-    Logger.begin('Checking headers and sources...')
-
-    _check_directory(include_dir, '.hpp')
-    _check_directory(sources_dir, '.cpp')
-
-    Logger.end('Headers and sources valid')
-
-####################################################################################################
-
-def _check_directory(directory, file_extension):
+def check_files(directory, file_extension):
     """
     Check the directory's content, for all files ending with "file_extension".
     """
