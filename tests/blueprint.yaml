@@ -3,6 +3,6 @@ default:
   build: build
   flags: [-Wall, -Werror, -g, -pedantic-errors]
   include: src
-  libraries: [glfw]
+  libraries: [glfw, GL]
   output: Test
   sources: $include
