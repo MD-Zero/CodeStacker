@@ -14,7 +14,13 @@ _CONF_DESC = '''specify the configuration to use;
 
 def parse_args() -> dict:
     """
-    Parse the command line's arguments, and return its content.
+    Parse the command line's arguments.
+
+    Returns:
+        A dictionary of options passed to the script, distributed in groups.
+
+    Raises:
+        SystemExit: No arguments or wrong ones were provided.
     """
     import argparse
     import sys
