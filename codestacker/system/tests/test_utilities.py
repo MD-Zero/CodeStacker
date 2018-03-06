@@ -23,10 +23,10 @@ class TestUtilities(unittest.TestCase):
         """Test sources validity."""
         from codestacker.constants        import errors as E
         from codestacker.exceptions       import TechnicalError
-        from codestacker.system.utilities import validate_sources
+        from codestacker.system.utilities import check_files
 
         with self.assertRaises(TechnicalError) as context:
-            validate_sources(self.source_dir, self.source_dir)
+            check_files(self.source_dir, '.cpp')
 
         self.assertEqual(context.exception.message, E.INVALID_FILENAME.format('Bad# .cpp'))
 
