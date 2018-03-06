@@ -55,7 +55,7 @@ class TestGraphTools(unittest.TestCase):
         with self.assertRaises(GraphError) as context:
             is_directed_acyclic_graph(self.deep_graph)
 
-        self.assertEqual(context.exception.message, E.DEPTH_THRESHOLD)
+        self.assertEqual(context.exception.message, E.GRAPH_TOO_DEEP)
 
     def test_get_topological_ordering(self):
         """Test topological ordering."""

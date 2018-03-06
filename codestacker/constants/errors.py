@@ -27,7 +27,7 @@ FOLDER_NOT_FOUND = 'folder "{}" is nonexistent'
 
 # Graph errors.
 CYCLES_IN_GRAPH = 'cycle(s) in graph detected'
-DEPTH_THRESHOLD = 'depth threshold exceeded'
+GRAPH_TOO_DEEP = 'depth threshold exceeded'
 
 # Sources inspection errors.
 INVALID_FILENAME = 'file "{}" doesn\'t match filenames requirements'
