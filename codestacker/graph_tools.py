@@ -17,11 +17,7 @@ def is_directed_acyclic_graph(graph):
     """
     Check whether the input graph is a DAG (Directed Acyclic Graph).
 
-    Args:
-        graph: A directed graph, in a form of a dictionary (key = node, value = children).
-
-    Raises:
-        GraphError: either the graph is cyclic, or its depth is too high.
+    :param graph: The directed graph, in a form of a dictionary (key = node, value = children).
     """
     from .constants  import errors as E
     from .exceptions import GraphError
@@ -46,11 +42,9 @@ def get_topological_ordering(graph) -> list:
     """
     Given a directed graph in input, return the topological ordering of its nodes.
 
-    Args:
-        graph: A directed graph, in a form of a dictionary (key = node, value = children).
+    :param graph: The directed graph, in a form of a dictionary (key = node, value = children).
 
-    Returns:
-        A list of nodes, in topological order (from bottom to top node).
+    :returns: A list of nodes, in topological order (from bottom to top node).
     """
     import copy
 
@@ -86,19 +80,15 @@ _DEPTH_THRESHOLD = 10
 def _go_down_and_check_cycle(graph, descendants, children, dead_ends, depth) -> int:
     """
     Given a start node, visit recursively all its descendants, looking for a cycle. The depth value
-    is under monitoring, and a "too deep" graph (more than 10 descendants) will stop the visitation.
+    is monitored, and a "too deep" graph (more than 10 descendants) will abort the visitation.
 
-    Args:
-        graph: The directed graph being visited.
-        descendants: A list of descendants previously visited.
-        children: A set of direct children of a node.
-        dead_ends: The list of identified "dead-end" nodes in the graph.
-        depth: The graph's depth.
+    :param graph: The directed graph being visited.
+    :param visited_nodes: The list of previously visited nodes.
+    :param children: The set of direct children of a node.
+    :param dead_ends: The list of identified "dead-end" nodes in the graph.
+    :param depth: The graph's depth.
 
-    Returns:
-        - 0 (=_ACYCLIC) if no cycles were detected;
-        - 1 (=_CYCLIC) if at least one cycle were detected;
-        - 2 (=_DEPTH_EXCEEDED) if the depth threshold has been exceeded.
+    :raises GraphError: either the graph is cyclic, or its depth is too high.
     """
     depth += 1
 

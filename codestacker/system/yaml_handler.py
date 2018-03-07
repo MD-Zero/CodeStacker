@@ -9,7 +9,13 @@ YAML file handling utilities.
 
 def load_yaml(file) -> dict:
     """
-    Read a YAML file and return its content as a list of dictionaries.
+    Read a YAML file and return its content.
+
+    :param file: The filename / path to read from.
+
+    :returns: The file's content as a list of dictionaries.
+
+    :raises TechnicalError: The YAML parsing or file reading failed, or the file is empty.
     """
     import os
     import yaml
@@ -46,6 +52,9 @@ def load_yaml(file) -> dict:
 def dump_yaml(content, file):
     """
     Dump some YAML content into a file.
+
+    :param content: The dictionary to write, in a form of YAML structure(s), in a file.
+    :param file: The filename / path to write in.
     """
     import yaml
 

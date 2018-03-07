@@ -2,14 +2,19 @@
 # -*- coding: utf-8 -*-
 
 """
-File system utilities.
+File utilities.
 """
 
 ####################################################################################################
 
 def get_files(directory, extension) -> list:
     """
-    Gather all the files ending with "extension" in the given directory and descendants.
+    Browse a directory and descendants, and gather all files ending with a given extension.
+
+    :param directory: The directory to start visiting from.
+    :param extension: The extension to look for in the directory and descendants.
+
+    :returns: A list of filenames / paths.
     """
     import os
 
@@ -26,7 +31,12 @@ def get_files(directory, extension) -> list:
 
 def check_files(directory, file_extension):
     """
-    Check the directory's content, for all files ending with "file_extension".
+    Check the validity of any source files within directory and descendants.
+
+    :param directory: The directory to start visiting from.
+    :param extension: The extension to look for in the directory and descendants.
+
+    :raises FileSystemError: A file doesn't match the naming requirements.
     """
     import os
     import re
