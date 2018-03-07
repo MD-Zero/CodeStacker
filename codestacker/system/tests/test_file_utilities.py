@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-Unit test for utilities.py module.
+Unit test for file_utilities.py module.
 """
 
 ####################################################################################################
 
 import unittest
 
-class TestUtilities(unittest.TestCase):
+class TestFileUtilities(unittest.TestCase):
     """
     Test class.
     """
@@ -21,14 +21,14 @@ class TestUtilities(unittest.TestCase):
 
     def test_validate_sources(self):
         """Test sources validity."""
-        from codestacker.constants        import errors as E
-        from codestacker.exceptions       import TechnicalError
-        from codestacker.system.utilities import check_files
+        from codestacker.constants             import errors as E
+        from codestacker.exceptions            import FileSystemError
+        from codestacker.system.file_utilities import check_files
 
-        with self.assertRaises(TechnicalError) as context:
+        with self.assertRaises(FileSystemError) as context:
             check_files(self.source_dir, '.cpp')
 
-        self.assertEqual(context.exception.message, E.INVALID_FILENAME.format('Bad# .cpp'))
+        self.assertEqual(context.exception.message, E.INVALID_FILENAME.format('Bad# ...cpp'))
 
 ####################################################################################################
 

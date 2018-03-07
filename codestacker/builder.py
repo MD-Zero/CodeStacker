@@ -27,9 +27,9 @@ def _validate_sources(config):
     """
     Check if headers and sources filenames are valid.
     """
-    from .constants        import keys as K
-    from .logger           import Logger
-    from .system.utilities import check_files
+    from .constants             import keys as K
+    from .logger                import Logger
+    from .system.file_utilities import check_files
 
     Logger.begin('Checking headers and sources...')
 
@@ -103,9 +103,9 @@ def _get_files_to_recompile(config) -> set:
     import os
     import subprocess
 
-    from .constants        import errors as E, keys as K
-    from .exceptions       import TechnicalError
-    from .system.utilities import get_files
+    from .constants             import errors as E, keys as K
+    from .exceptions            import TechnicalError
+    from .system.file_utilities import get_files
 
     obj_timestamp = {}
 
@@ -153,10 +153,10 @@ def _link(config):
     import os
     import subprocess
 
-    from .constants        import errors as E, keys as K
-    from .exceptions       import TechnicalError
-    from .logger           import Logger
-    from .system.utilities import get_files
+    from .constants             import errors as E, keys as K
+    from .exceptions            import TechnicalError
+    from .logger                import Logger
+    from .system.file_utilities import get_files
 
     Logger.begin('Linking')
 
