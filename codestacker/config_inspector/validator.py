@@ -9,7 +9,9 @@ Validate the configuration.
 
 def validate_config(config):
     """
-    Validate the correctness of the configuration in input.
+    Validate the correctness of a configuration.
+
+    :param config: The configuration to operate on.
     """
     from codestacker.logger import Logger
 
@@ -24,7 +26,9 @@ def validate_config(config):
 
 def _check_keys(config):
     """
-    Perform presence and type checks for the configuration keys' values.
+    Perform presence and type checks on a configuration keys' values.
+
+    :param config: The configuration to operate on.
     """
     from codestacker.constants import keys as K
 
@@ -43,7 +47,12 @@ def _check_keys(config):
 
 def _check_key(key, value, key_type, optional=False):
     """
-    Perform presence and type checks for mandatory and optional configuration keys.
+    Perform existence and type checks on a key/value pair.
+
+    :param key: The key to check.
+    :param value: The value to check.
+    :param key_type: The key's type to check.
+    :param optional: An optional boolean to check... optional keys.
     """
     from codestacker.constants  import errors as E
     from codestacker.exceptions import FunctionalError

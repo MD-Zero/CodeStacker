@@ -9,7 +9,9 @@ Adapt the configuration.
 
 def adapt_config(config):
     """
-    Adapt configuration to match process requirements (values, definition, etc.).
+    Adapt a configuration to match process requirements (values, definition, etc.).
+
+    :param config: The configuration to adapt.
     """
     from codestacker.constants import keys as K
     from codestacker.logger    import Logger
@@ -34,9 +36,15 @@ def adapt_config(config):
 
 def _adapt_path(root, config, key, should_create=False):
     """
-    Check if directory for the given exist:
-        - raise an error if absent and mandatory;
-        - create it if optional.
+    Turn a directory path into its absolute equivalent.
+
+    :param root: The root directory to refer from.
+    :param config: The configuration to look in.
+    :param key: The configuration key to adapt.
+    :param should_create: An optional boolean about whether a non-existent directory should be
+                          created or not.
+
+    :raises TechnicalError: the directory is non-existent (and should be).
     """
     import os
 
@@ -60,7 +68,10 @@ def _adapt_path(root, config, key, should_create=False):
 
 def _turn_into_set(config, key):
     """
-    Turn the configuration key's values into a set.
+    Turn a configuration key's value into a set.
+
+    :param config: The configuration to operate on.
+    :param key: The key to transform.
     """
     if key in config:
         config[key] = set(config[key])

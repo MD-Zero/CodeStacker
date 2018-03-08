@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-CodeStacker--a C++ build system.
+CodeStacker--a Python3 build system for C++.
 """
 
 ####################################################################################################
