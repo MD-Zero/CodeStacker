@@ -96,7 +96,7 @@ def _compile(config):
 
 ####################################################################################################
 
-def _get_files_to_recompile(config) -> set:
+def _get_files_to_recompile(config):
     """
     Return a list of source files that, given the existing object files in the "build" folder, need
     to be (re)compiled.

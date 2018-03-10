@@ -18,7 +18,7 @@ def parse_args() -> dict:
 
     :returns: A dictionary of options passed to the script, distributed in groups.
 
-    :raises SystemExit: No arguments or wrong ones were provided.
+    :raises SystemExit: no arguments or wrong ones were provided.
     """
     import argparse
     import sys

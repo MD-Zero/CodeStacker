@@ -53,6 +53,8 @@ def _check_key(key, value, key_type, optional=False):
     :param value: The value to check.
     :param key_type: The key's type to check.
     :param optional: An optional boolean to check... optional keys.
+
+    :raises FunctionalError: one mandatory key is missing or of wrong type.
     """
     from codestacker.errors            import errors
     from codestacker.errors.exceptions import FunctionalError
@@ -68,8 +70,12 @@ _REGEX_VAR = r'\$(\w+)'
 
 def _check_and_substitute_vars(config):
     """
-    Check if variables are well-defined (type + existence), and if there are no cyclic references.
-    Once done, proceed with the substitution.
+    Check if variables are well-defined (type + existence), and proceed with variables substitution.
+
+    :param config: The configuration to operate on.
+
+    :raises FunctionalError: a variable is undefined or of wrong type.
+    :raises TechnicalError: one or many cyclic references were detected among variables.
     """
     import re
 

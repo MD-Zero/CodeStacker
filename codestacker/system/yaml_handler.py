@@ -15,7 +15,8 @@ def load_yaml(file) -> dict:
 
     :returns: The file's content as a list of dictionaries.
 
-    :raises TechnicalError: The YAML parsing or file reading failed, or the file is empty.
+    :raises FileSystemError: the file reading failed.
+    :raises TechnicalError: the YAML parsing failed, or the file is empty.
     """
     import os
     import yaml

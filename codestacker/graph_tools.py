@@ -24,7 +24,7 @@ def is_directed_acyclic_graph(graph):
 
 ####################################################################################################
 
-def get_topological_ordering(graph) -> list:
+def get_topological_ordering(graph):
     """
     Given a directed graph in input, return the topological ordering of its nodes.
 
