@@ -23,8 +23,9 @@ def main():
     from .builder                    import build
     from .cleaner                    import clean
     from .config_inspector.adaptor   import adapt_config
+    from .config_inspector.retriever import get_config
     from .config_inspector.validator import validate_config
-    from .exceptions                 import Error
+    from .errors.exceptions          import Error
     from .logger                     import Logger
 
     arguments = parse_args()
@@ -48,30 +49,3 @@ def main():
         Logger.error('Keyboard interruption: stopping')
     except BaseException:
         traceback.print_exc()
-
-####################################################################################################
-
-####################################################################################################
-############################################## TEMP ################################################
-####################################################################################################
-def get_config(arguments) -> dict:
-    """
-    From the arguments in input, load the YAML configuration file, extract the wished configuration
-    and return it.
-    """
-    import os
-
-    from .constants           import errors as E, keys as K
-    from .exceptions          import TechnicalError
-    from .system.yaml_handler import load_yaml
-
-    config = load_yaml(arguments['file']).get(arguments['config'])
-
-    if config is None:
-        raise TechnicalError(E.CONFIG_NOT_FOUND.format(arguments['config']))
-
-    # Add those special keys to the configuration, for later processing.
-    config[K.ROOT] = os.path.realpath(os.path.dirname(arguments['file']))
-    config[K.COMMAND] = arguments['command']
-
-    return config

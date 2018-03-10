@@ -20,9 +20,9 @@ def load_yaml(file) -> dict:
     import os
     import yaml
 
-    from codestacker.constants  import errors as E
-    from codestacker.exceptions import TechnicalError
-    from codestacker.logger     import Logger
+    from codestacker.errors            import errors
+    from codestacker.errors.exceptions import FileSystemError, TechnicalError
+    from codestacker.logger import Logger
 
     Logger.begin('Reading "{}" file...'.format(os.path.relpath(file)))
 
@@ -33,12 +33,12 @@ def load_yaml(file) -> dict:
         with open(file, 'r') as stream:
             content = list(yaml.safe_load_all(stream))
     except IOError as error:
-        raise TechnicalError(E.FILE_READING, error)
+        raise FileSystemError(errors.FILE_READING, error=error)
     except yaml.YAMLError as error:
-        raise TechnicalError(E.YAML_PARSING, error)
+        raise TechnicalError(errors.YAML_PARSING, error=error)
 
     if not content:
-        raise TechnicalError(E.EMPTY_YAML)
+        raise TechnicalError(errors.EMPTY_YAML)
 
     # Transform the "list of dicts" into one single dict.
     content = {key: value for pair in content for key, value in pair.items()}
@@ -58,13 +58,13 @@ def dump_yaml(content, file):
     """
     import yaml
 
-    from codestacker.constants  import errors as E
-    from codestacker.exceptions import TechnicalError
+    from codestacker.errors            import errors
+    from codestacker.errors.exceptions import TechnicalError
 
     try:
         with open(file, 'w') as stream:
             yaml.safe_dump(content, stream, default_flow_style=False)
     except IOError as error:
-        TechnicalError(E.FILE_WRITING, error).print()
+        TechnicalError(errors.FILE_WRITING, error).print()
     except yaml.YAMLError as error:
-        TechnicalError(E.YAML_DUMPING, error).print()
+        TechnicalError(errors.YAML_DUMPING, error).print()

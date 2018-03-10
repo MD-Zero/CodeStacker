@@ -39,32 +39,34 @@ class TestGraphTools(unittest.TestCase):
             'i': set(['j']),
             'j': set(['k'])}
 
+        self.ordered_nodes = ['g', 'e', 'd', 'c', 'b']
+
     def test_is_directed_acyclic_graph(self):
         """Test DAG detection."""
-        from codestacker.constants   import errors as E
-        from codestacker.exceptions  import GraphError
-        from codestacker.graph_tools import is_directed_acyclic_graph
+        from codestacker.errors            import errors as E
+        from codestacker.errors.exceptions import GraphError
+        from codestacker.graph_tools       import is_directed_acyclic_graph
 
+        # Acyclic graph.
         is_directed_acyclic_graph(self.acyclic_graph)
 
+        # Cyclic graph.
         with self.assertRaises(GraphError) as context:
             is_directed_acyclic_graph(self.cyclic_graph)
 
-        self.assertEqual(context.exception.message, E.CYCLES_IN_GRAPH)
+        self.assertEqual(context.exception.args[0], E.CYCLES_IN_GRAPH)
 
+        # Deep graph.
         with self.assertRaises(GraphError) as context:
             is_directed_acyclic_graph(self.deep_graph)
 
-        self.assertEqual(context.exception.message, E.GRAPH_TOO_DEEP)
+        self.assertEqual(context.exception.args[0], E.GRAPH_TOO_DEEP)
 
     def test_get_topological_ordering(self):
         """Test topological ordering."""
         from codestacker.graph_tools import get_topological_ordering
 
-        expected_ordered_list = ['g', 'e', 'd', 'c', 'b']
-        actual_ordered_list = get_topological_ordering(self.acyclic_graph)
-
-        self.assertEqual(expected_ordered_list, actual_ordered_list)
+        self.assertEqual(self.ordered_nodes, get_topological_ordering(self.acyclic_graph))
 
 ####################################################################################################
 

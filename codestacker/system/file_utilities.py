@@ -29,23 +29,24 @@ def get_files(directory, extension) -> list:
 
 ####################################################################################################
 
-def check_files(directory, file_extension):
+def check_files(directory, extension):
     """
     Check the validity of any source files within directory and descendants.
 
     :param directory: The directory to start visiting from.
     :param extension: The extension to look for in the directory and descendants.
 
-    :raises FileSystemError: A file doesn't match the naming requirements.
+    :raises FileSystemError: a file doesn't match the naming requirements.
     """
     import os
     import re
 
-    from codestacker.constants  import errors as E
-    from codestacker.exceptions import TechnicalError
+    from codestacker.errors            import errors as E
+    from codestacker.errors.exceptions import FileSystemError
 
-    for file in get_files(directory, file_extension):
-        filename = os.path.basename(file)
+    pattern = re.compile(r'^\w+$')
 
-        if re.search(r'^\w+{}$'.format(file_extension), filename) is None:
-            raise TechnicalError(E.INVALID_FILENAME.format(filename))
+    for current_dir, dirs, files in os.walk(directory):
+        for file in files:
+            if (file.endswith(extension)) and (pattern.search(os.path.splitext(file)[0]) is None):
+                raise FileSystemError(E.INVALID_FILENAME, file)

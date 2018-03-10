@@ -30,18 +30,18 @@ def _check_keys(config):
 
     :param config: The configuration to operate on.
     """
-    from codestacker.constants import keys as K
+    from codestacker.constants import keys
 
     # Mandatory attributes.
-    _check_key(K.BINARY, config.get(K.BINARY), str)
-    _check_key(K.BUILD, config.get(K.BUILD), str)
-    _check_key(K.INCLUDE, config.get(K.INCLUDE), str)
-    _check_key(K.OUTPUT, config.get(K.OUTPUT), str)
-    _check_key(K.SOURCES, config.get(K.SOURCES), str)
+    _check_key(keys.BINARY, config.get(keys.BINARY), str)
+    _check_key(keys.BUILD, config.get(keys.BUILD), str)
+    _check_key(keys.INCLUDE, config.get(keys.INCLUDE), str)
+    _check_key(keys.OUTPUT, config.get(keys.OUTPUT), str)
+    _check_key(keys.SOURCES, config.get(keys.SOURCES), str)
 
     # Optional attributes.
-    _check_key(K.FLAGS, config.get(K.FLAGS), list, True)
-    _check_key(K.LIBRARIES, config.get(K.LIBRARIES), list, True)
+    _check_key(keys.FLAGS, config.get(keys.FLAGS), list, True)
+    _check_key(keys.LIBRARIES, config.get(keys.LIBRARIES), list, True)
 
 ####################################################################################################
 
@@ -54,13 +54,13 @@ def _check_key(key, value, key_type, optional=False):
     :param key_type: The key's type to check.
     :param optional: An optional boolean to check... optional keys.
     """
-    from codestacker.constants  import errors as E
-    from codestacker.exceptions import FunctionalError
+    from codestacker.errors            import errors
+    from codestacker.errors.exceptions import FunctionalError
 
     if (value is None) and (not optional):
-        raise FunctionalError(E.MISSING_KEY.format(key))
+        raise FunctionalError(errors.MISSING_KEY, key)
     elif (value is not None) and (not isinstance(value, key_type)):
-        raise FunctionalError(E.INCORRECT_KEY_TYPE.format(key, key_type.__name__))
+        raise FunctionalError(errors.WRONG_KEY_TYPE, key)
 
 ####################################################################################################
 
@@ -73,9 +73,9 @@ def _check_and_substitute_vars(config):
     """
     import re
 
-    from codestacker.constants   import errors as E
-    from codestacker.exceptions  import GraphError, TechnicalError, FunctionalError
-    from codestacker.graph_tools import is_directed_acyclic_graph, get_topological_ordering
+    from codestacker.errors            import errors
+    from codestacker.errors.exceptions import GraphError, TechnicalError, FunctionalError
+    from codestacker.graph_tools       import is_directed_acyclic_graph, get_topological_ordering
 
     # Check first variables correctness.
     for value in config.values():
@@ -84,9 +84,9 @@ def _check_and_substitute_vars(config):
 
         for var in re.findall(_REGEX_VAR, value):
             if var not in config:
-                raise FunctionalError(E.UNDEFINED_VAR.format(var))
+                raise FunctionalError(errors.UNDEFINED_VAR, var)
             elif not isinstance(config[var], str):
-                raise FunctionalError(E.WRONG_VAR_TYPE.format(var))
+                raise FunctionalError(errors.WRONG_VAR_TYPE, var)
 
     # Gather all variables in one place.
     all_vars = {}
@@ -101,7 +101,7 @@ def _check_and_substitute_vars(config):
     try:
         is_directed_acyclic_graph(all_vars)
     except GraphError as error:
-        raise TechnicalError(E.ERROR_VAR_GRAPH.format(error.message))
+        raise TechnicalError(errors.ERROR_VAR_GRAPH, error.args[0])
 
     # Based on their topological ordering, proceed with the substitutions.
     for var in get_topological_ordering(all_vars):

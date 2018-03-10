@@ -19,16 +19,16 @@ class TestFileUtilities(unittest.TestCase):
 
         self.source_dir = os.path.join(os.path.dirname(__file__), 'resources')
 
-    def test_validate_sources(self):
-        """Test sources validity."""
-        from codestacker.constants             import errors as E
-        from codestacker.exceptions            import FileSystemError
+    def test_check_files(self):
+        """Test filenames."""
+        from codestacker.errors                import errors as E
+        from codestacker.errors.exceptions     import FileSystemError
         from codestacker.system.file_utilities import check_files
 
         with self.assertRaises(FileSystemError) as context:
             check_files(self.source_dir, '.cpp')
 
-        self.assertEqual(context.exception.message, E.INVALID_FILENAME.format('Bad# ...cpp'))
+        self.assertEqual(context.exception.args[0], E.INVALID_FILENAME)
 
 ####################################################################################################
 

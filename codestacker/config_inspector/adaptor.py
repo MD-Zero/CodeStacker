@@ -13,22 +13,22 @@ def adapt_config(config):
 
     :param config: The configuration to adapt.
     """
-    from codestacker.constants import keys as K
+    from codestacker.constants import keys
     from codestacker.logger    import Logger
 
     # Dereferenced for performance.
-    root = config[K.ROOT]
+    root = config[keys.ROOT]
 
     Logger.begin('Adapting configuration keys...')
 
-    _adapt_path(root, config, K.INCLUDE)
-    _adapt_path(root, config, K.SOURCES)
+    _adapt_path(root, config, keys.INCLUDE)
+    _adapt_path(root, config, keys.SOURCES)
 
-    _adapt_path(root, config, K.BINARY, True)
-    _adapt_path(root, config, K.BUILD, True)
+    _adapt_path(root, config, keys.BINARY, True)
+    _adapt_path(root, config, keys.BUILD, True)
 
-    _turn_into_set(config, K.FLAGS)
-    _turn_into_set(config, K.LIBRARIES)
+    _turn_into_set(config, keys.FLAGS)
+    _turn_into_set(config, keys.LIBRARIES)
 
     Logger.end('Done')
 
@@ -48,15 +48,15 @@ def _adapt_path(root, config, key, should_create=False):
     """
     import os
 
-    from codestacker.constants  import errors as E
-    from codestacker.exceptions import TechnicalError
-    from codestacker.logger     import Logger
+    from codestacker.errors            import errors
+    from codestacker.errors.exceptions import TechnicalError
+    from codestacker.logger            import Logger
 
     abs_path = os.path.join(root, config[key])
 
     if not os.path.exists(abs_path):
         if not should_create:
-            raise TechnicalError(E.FOLDER_NOT_FOUND.format(abs_path))
+            raise TechnicalError(errors.FOLDER_NOT_FOUND, abs_path)
         else:
             Logger.warning('Folder "{}" not found: creating it...'.format(abs_path))
 

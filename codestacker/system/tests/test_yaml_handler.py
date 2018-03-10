@@ -26,26 +26,30 @@ class TestYamlHandler(unittest.TestCase):
 
     def test_all_cases(self):
         """Test all blueprints."""
-        from codestacker.constants           import errors as E
-        from codestacker.exceptions          import TechnicalError
+        from codestacker.errors              import errors as E
+        from codestacker.errors.exceptions   import FileSystemError, TechnicalError
         from codestacker.system.yaml_handler import load_yaml
 
+        # Good blueprint.
         load_yaml(self.blueprint_good)
 
-        with self.assertRaises(TechnicalError) as context:
+        # Non-existent blueprint.
+        with self.assertRaises(FileSystemError) as context:
             load_yaml(self.blueprint_nonexistent)
 
-        self.assertEqual(context.exception.message, E.FILE_READING)
+        self.assertEqual(context.exception.args[0], E.FILE_READING)
 
+        # Bad blueprint.
         with self.assertRaises(TechnicalError) as context:
             load_yaml(self.blueprint_bad)
 
-        self.assertEqual(context.exception.message, E.YAML_PARSING)
+        self.assertEqual(context.exception.args[0], E.YAML_PARSING)
 
+        # Empty blueprint.
         with self.assertRaises(TechnicalError) as context:
             load_yaml(self.blueprint_empty)
 
-        self.assertEqual(context.exception.message, E.EMPTY_YAML)
+        self.assertEqual(context.exception.args[0], E.EMPTY_YAML)
 
 ####################################################################################################
 

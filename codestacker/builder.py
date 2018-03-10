@@ -27,14 +27,14 @@ def _validate_sources(config):
     """
     Check if headers and sources filenames are valid.
     """
-    from .constants             import keys as K
+    from .constants             import keys
     from .logger                import Logger
     from .system.file_utilities import check_files
 
     Logger.begin('Checking headers and sources...')
 
-    check_files(config[K.INCLUDE], '.hpp')
-    check_files(config[K.SOURCES], '.cpp')
+    check_files(config[keys.INCLUDE], '.hpp')
+    check_files(config[keys.SOURCES], '.cpp')
 
     Logger.end('Headers and sources valid')
 
@@ -50,9 +50,10 @@ def _compile(config):
     import re
     import subprocess
 
-    from .constants  import errors as E, keys as K
-    from .exceptions import TechnicalError
-    from .logger     import Logger
+    from .constants         import keys
+    from .errors            import errors
+    from .errors.exceptions import TechnicalError
+    from .logger            import Logger
 
     files_to_compile = _get_files_to_recompile(config)
 
@@ -66,17 +67,17 @@ def _compile(config):
     compile_command = ['g++']
 
     # Step 2: compilation flags.
-    compile_command.extend(config[K.FLAGS])
+    compile_command.extend(config[keys.FLAGS])
 
     # Add this special flag to force the compiler to print its output in colors.
     if _SPECIAL_FLAG not in compile_command:
         compile_command.append(_SPECIAL_FLAG)
 
     # Step 3: include directory.
-    compile_command.extend(['-I', config[K.INCLUDE]])
+    compile_command.extend(['-I', config[keys.INCLUDE]])
 
     for file in files_to_compile:
-        Logger.info('Compiling {}...'.format(os.path.relpath(file, config[K.ROOT])))
+        Logger.info('Compiling {}...'.format(os.path.relpath(file, config[keys.ROOT])))
 
         # Step 4: source file to compile.
         file_to_compile = ['-c', file]
@@ -84,12 +85,12 @@ def _compile(config):
         target_filename = re.sub(r'.cpp$', '.o', os.path.basename(file))
 
         # Step 5: object file to produce.
-        file_to_compile.extend(['-o', os.path.join(config[K.BUILD], target_filename)])
+        file_to_compile.extend(['-o', os.path.join(config[keys.BUILD], target_filename)])
 
         try:
             subprocess.run([*compile_command, *file_to_compile], stderr=subprocess.PIPE, check=True)
         except subprocess.CalledProcessError as error:
-            raise TechnicalError(E.COMPILATION_FAILED, error.stderr.decode('UTF-8'))
+            raise TechnicalError(errors.COMPILATION_FAILED, error=error.stderr.decode('UTF-8'))
 
     Logger.end('Compilation successful')
 
@@ -103,24 +104,25 @@ def _get_files_to_recompile(config) -> set:
     import os
     import subprocess
 
-    from .constants             import errors as E, keys as K
-    from .exceptions            import TechnicalError
+    from .constants             import keys
+    from .errors                import errors
+    from .errors.exceptions     import TechnicalError
     from .system.file_utilities import get_files
 
     obj_timestamp = {}
 
-    for file in get_files(config[K.BUILD], '.o'):
+    for file in get_files(config[keys.BUILD], '.o'):
         obj_timestamp[os.path.basename(file)] = os.path.getmtime(file)
 
     recipes = {}
     output = ''
-    preproc_command = ['g++', '-I', config[K.INCLUDE], '-MM']
+    preproc_command = ['g++', '-I', config[keys.INCLUDE], '-MM']
 
-    for file in get_files(config[K.SOURCES], '.cpp'):
+    for file in get_files(config[keys.SOURCES], '.cpp'):
         try:
             output = subprocess.run([*preproc_command, file], stdout=subprocess.PIPE, check=True)
         except subprocess.CalledProcessError as error:
-            raise TechnicalError(E.RECIPE_FAILED, error.stderr.decode('UTF-8'))
+            raise TechnicalError(errors.RECIPE_FAILED, error.stderr.decode('UTF-8'))
 
         target, prerequisites = output.stdout.decode('UTF-8').split(':', 1)
 
@@ -153,8 +155,9 @@ def _link(config):
     import os
     import subprocess
 
-    from .constants             import errors as E, keys as K
-    from .exceptions            import TechnicalError
+    from .constants             import keys
+    from .errors                import errors
+    from .errors.exceptions     import TechnicalError
     from .logger                import Logger
     from .system.file_utilities import get_files
 
@@ -164,16 +167,16 @@ def _link(config):
     linking_command = ['g++']
 
     # Step 2, 3: output executable and object files.
-    linking_command.extend(['-o', os.path.join(config[K.BINARY], config[K.OUTPUT])])
-    linking_command.extend(get_files(config[K.BUILD], '.o'))
+    linking_command.extend(['-o', os.path.join(config[keys.BINARY], config[keys.OUTPUT])])
+    linking_command.extend(get_files(config[keys.BUILD], '.o'))
 
     # Step 4: libraries.
-    if config[K.LIBRARIES]:
-        linking_command.extend('-l' + x for x in config[K.LIBRARIES])
+    if config[keys.LIBRARIES]:
+        linking_command.extend('-l' + x for x in config[keys.LIBRARIES])
 
     try:
         subprocess.run(linking_command, stderr=subprocess.PIPE, check=True)
     except subprocess.CalledProcessError as error:
-        raise TechnicalError(E.LINKING_FAILED, error.stderr.decode('UTF-8'))
+        raise TechnicalError(errors.LINKING_FAILED, error.stderr.decode('UTF-8'))
 
     Logger.end('Linking successful')

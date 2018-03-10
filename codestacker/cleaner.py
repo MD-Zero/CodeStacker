@@ -11,19 +11,19 @@ def clean(config):
     """
     Clean any compilation results.
     """
-    from .constants import keys as K
+    from .constants import keys
     from .logger    import Logger
 
     Logger.begin('Cleaning-up...')
 
     # Dereferenced for performance.
-    root = config[K.ROOT]
+    root = config[keys.ROOT]
 
     # Clean-up "build" directory.
-    _remove_files(config[K.BUILD], root)
+    _remove_files(config[keys.BUILD], root)
 
     # Clean-up "bin" directory.
-    _remove_files(config[K.BINARY], root)
+    _remove_files(config[keys.BINARY], root)
 
     # Clean-up "*.gch" precompiled header files.
     # _remove_files(config[keys.SOURCES], root, '.gch')
@@ -39,9 +39,9 @@ def _remove_files(directory, root):
     import os
     import shutil
 
-    from .constants  import errors as E
-    from .exceptions import TechnicalError
-    from .logger     import Logger
+    from .errors            import errors
+    from .errors.exceptions import TechnicalError
+    from .logger            import Logger
 
     with os.scandir(directory) as entries:
         for entry in entries:
@@ -57,4 +57,4 @@ def _remove_files(directory, root):
                 else:
                     Logger.warning('"{}" neither file nor directory: skipped'.format(abs_entry))
             except Exception as error:
-                raise TechnicalError(E.REMOVAL_FAILED.format(abs_entry), error)
+                raise TechnicalError(errors.REMOVAL_FAILED, abs_entry, error)

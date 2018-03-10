@@ -7,21 +7,12 @@ Directed graph scanning utilities.
 
 ####################################################################################################
 
-_ACYCLIC = 0
-_CYCLIC = 1
-_DEPTH_EXCEEDED = 2
-
-####################################################################################################
-
 def is_directed_acyclic_graph(graph):
     """
     Check whether the input graph is a DAG (Directed Acyclic Graph).
 
     :param graph: The directed graph, in a form of a dictionary (key = node, value = children).
     """
-    from .constants  import errors as E
-    from .exceptions import GraphError
-
     dead_ends = set()
     depth = 0
 
@@ -29,12 +20,7 @@ def is_directed_acyclic_graph(graph):
         if node in dead_ends:
             continue
 
-        value = _go_down_and_check_cycle(graph, [node], children, dead_ends, depth)
-
-        if value == _CYCLIC:
-            raise GraphError(E.CYCLES_IN_GRAPH)
-        elif value == _DEPTH_EXCEEDED:
-            raise GraphError(E.GRAPH_TOO_DEEP)
+        _go_down_and_check_cycle(graph, [node], children, dead_ends, depth)
 
 ####################################################################################################
 
@@ -77,7 +63,7 @@ def get_topological_ordering(graph) -> list:
 # '10' is an arbitrary limit.
 _DEPTH_THRESHOLD = 10
 
-def _go_down_and_check_cycle(graph, descendants, children, dead_ends, depth) -> int:
+def _go_down_and_check_cycle(graph, visited_nodes, children, dead_ends, depth):
     """
     Given a start node, visit recursively all its descendants, looking for a cycle. The depth value
     is monitored, and a "too deep" graph (more than 10 descendants) will abort the visitation.
@@ -90,25 +76,23 @@ def _go_down_and_check_cycle(graph, descendants, children, dead_ends, depth) -> 
 
     :raises GraphError: either the graph is cyclic, or its depth is too high.
     """
+    from .errors            import errors as E
+    from .errors.exceptions import GraphError
+
     depth += 1
 
     if depth >= _DEPTH_THRESHOLD:
-        return _DEPTH_EXCEEDED
+        raise GraphError(E.GRAPH_TOO_DEEP)
 
     for node in children:
         if (node not in graph) or (node in dead_ends):
             continue
 
-        if node in descendants:
-            return _CYCLIC
+        if node in visited_nodes:
+            raise GraphError(E.CYCLES_IN_GRAPH)
 
-        descendants.append(node)
+        visited_nodes.append(node)
 
-        value = _go_down_and_check_cycle(graph, descendants, graph[node], dead_ends, depth)
+        _go_down_and_check_cycle(graph, visited_nodes, graph[node], dead_ends, depth)
 
-        if value in [_CYCLIC, _DEPTH_EXCEEDED]:
-            return value
-
-        dead_ends.add(descendants.pop())
-
-    return _ACYCLIC
+        dead_ends.add(visited_nodes.pop())
