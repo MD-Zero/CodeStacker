@@ -12,7 +12,7 @@ _FILE_DESC = '''specify the blueprint file to use;
 _CONF_DESC = '''specify the configuration to use;
                 if not specified, the configuration "default" will be used, if it exists'''
 
-def parse_args() -> dict:
+def parse_args():
     """
     Parse the command line's arguments.
 

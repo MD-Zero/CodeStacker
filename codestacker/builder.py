@@ -10,6 +10,8 @@ Code builder: compilation + linking.
 def build(config):
     """
     Build the project (compile + link).
+
+    :param config: The configuration to operate on.
     """
     from .logger import Logger
 
@@ -26,6 +28,8 @@ def build(config):
 def _validate_sources(config):
     """
     Check if headers and sources filenames are valid.
+
+    :param config: The configuration to operate on.
     """
     from .constants             import keys
     from .logger                import Logger
@@ -45,6 +49,10 @@ _SPECIAL_FLAG = '-fdiagnostics-color=always'
 def _compile(config):
     """
     Compile the source files into object files.
+
+    :param config: The configuration to operate on.
+
+    :raises TechnicalError: a source file compilation failed.
     """
     import os
     import re
@@ -100,6 +108,12 @@ def _get_files_to_recompile(config):
     """
     Return a list of source files that, given the existing object files in the "build" folder, need
     to be (re)compiled.
+
+    :param config: The configuration to operate on.
+
+    :returns: A list of files to recompile.
+
+    :raises TechnicalError: a recipe failed to be computed.
     """
     import os
     import subprocess
@@ -151,6 +165,10 @@ def _get_files_to_recompile(config):
 def _link(config):
     """
     Link the object files into an executable.
+
+    :param config: The configuration to operate on.
+
+    :raises TechnicalError: a file linking failed.
     """
     import os
     import subprocess

@@ -7,7 +7,7 @@ File utilities.
 
 ####################################################################################################
 
-def get_files(directory, extension) -> list:
+def get_files(directory, extension):
     """
     Browse a directory and descendants, and gather all files ending with a given extension.
 
