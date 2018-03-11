@@ -20,7 +20,7 @@ def get_files(directory, extension):
 
     all_files = []
 
-    for current_dir, dirs, files in os.walk(directory):
+    for current_dir, _, files in os.walk(directory):
         for file in files:
             if file.endswith(extension):
                 all_files.append(os.path.join(current_dir, file))
@@ -46,7 +46,7 @@ def check_files(directory, extension):
 
     pattern = re.compile(r'^\w+$')
 
-    for current_dir, dirs, files in os.walk(directory):
+    for _, _, files in os.walk(directory):
         for file in files:
             if (file.endswith(extension)) and (pattern.search(os.path.splitext(file)[0]) is None):
                 raise FileSystemError(E.INVALID_FILENAME, file)
