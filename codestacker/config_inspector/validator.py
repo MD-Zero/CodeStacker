@@ -66,8 +66,6 @@ def _check_key(key, value, key_type, optional=False):
 
 ####################################################################################################
 
-_REGEX_VAR = r'\$(\w+)'
-
 def _check_and_substitute_vars(config):
     """
     Check if variables are well-defined (type + existence), and proceed with variables substitution.
@@ -83,12 +81,14 @@ def _check_and_substitute_vars(config):
     from codestacker.errors.exceptions import GraphError, TechnicalError, FunctionalError
     from codestacker.graph_tools       import is_directed_acyclic_graph, get_topological_ordering
 
+    pattern = re.compile(r'\$(\w+)')
+
     # Check first variables correctness.
     for value in config.values():
         if not isinstance(value, str):
             continue
 
-        for var in re.findall(_REGEX_VAR, value):
+        for var in pattern.findall(value):
             if var not in config:
                 raise FunctionalError(errors.UNDEFINED_VAR, var)
             elif not isinstance(config[var], str):
@@ -101,7 +101,7 @@ def _check_and_substitute_vars(config):
         if not isinstance(value, str):
             continue
 
-        all_vars[key] = set(re.findall(_REGEX_VAR, value))
+        all_vars[key] = set(pattern.findall(value))
 
     # Check if variables form a DAG (Directed Acyclic Graph).
     try:
