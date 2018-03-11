@@ -5,7 +5,7 @@
 Setup script.
 """
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 import codestacker
 
@@ -17,7 +17,7 @@ setup(
     author='Matthieu Dufour',
     author_email='mdufourpro@gmail.com',
     license='MIT',
-    packages=['codestacker'],
+    packages=find_packages(exclude=['*.tests']),
     install_requires=['PyYAML'],
     include_package_data=True,
     scripts=['scripts/codestacker'],
