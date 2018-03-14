@@ -31,14 +31,14 @@ def _validate_sources(config):
 
     :param config: The configuration to operate on.
     """
-    from .constants             import keys
+    from .constants             import keys, extensions
     from .logger                import Logger
     from .system.file_utilities import check_files
 
     Logger.begin('Checking headers and sources...')
 
-    check_files(config[keys.INCLUDE], '.hpp')
-    check_files(config[keys.SOURCES], '.cpp')
+    check_files(config[keys.INCLUDE], extensions.HEADERS)
+    check_files(config[keys.SOURCES], extensions.SOURCES)
 
     Logger.end('Headers and sources valid')
 
@@ -58,7 +58,7 @@ def _compile(config):
     import re
     import subprocess
 
-    from .constants         import keys
+    from .constants         import keys, extensions
     from .errors            import errors
     from .errors.exceptions import TechnicalError
     from .logger            import Logger
@@ -84,13 +84,15 @@ def _compile(config):
     # Step 3: include directory.
     compile_command.extend(['-I', config[keys.INCLUDE]])
 
+    pattern = re.compile(r'(' + r'|'.join([re.escape(x) for x in extensions.SOURCES]) + r')$')
+
     for file in files_to_compile:
         Logger.info('Compiling {}...'.format(os.path.relpath(file, config[keys.ROOT])))
 
         # Step 4: source file to compile.
         file_to_compile = ['-c', file]
 
-        target_filename = re.sub(r'.cpp$', '.o', os.path.basename(file))
+        target_filename = pattern.sub('.o', os.path.basename(file))
 
         # Step 5: object file to produce.
         file_to_compile.extend(['-o', os.path.join(config[keys.BUILD], target_filename)])
@@ -116,11 +118,8 @@ def _get_files_to_recompile(config):
     :raises TechnicalError: a recipe failed to be computed.
     """
     import os
-    import subprocess
 
-    from .constants             import keys
-    from .errors                import errors
-    from .errors.exceptions     import TechnicalError
+    from .constants             import keys, extensions
     from .system.file_utilities import get_files
 
     obj_timestamp = {}
@@ -128,11 +127,48 @@ def _get_files_to_recompile(config):
     for file in get_files(config[keys.BUILD], '.o'):
         obj_timestamp[os.path.basename(file)] = os.path.getmtime(file)
 
-    recipes = {}
-    output = ''
-    preproc_command = ['g++', '-I', config[keys.INCLUDE], '-MM']
+    to_compile = set()
 
-    for file in get_files(config[keys.SOURCES], '.cpp'):
+    for obj, file_timestamp in _get_recipes(config[keys.SOURCES], config[keys.INCLUDE]).items():
+        # Case 1: new targets.
+        if obj not in obj_timestamp:
+            to_compile.update(file_timestamp.keys())
+        # Case 2: modified source files.
+        else:
+            for file, timestamp in file_timestamp.items():
+                if timestamp > obj_timestamp[obj]:
+                    to_compile.add(file)
+
+    to_compile = set(file for file in to_compile if file.endswith(extensions.SOURCES))
+
+    return to_compile
+
+####################################################################################################
+
+def _get_recipes(sources_dir, include_dir):
+    """
+    Get all recipes needed to (re)compute the dependencies.
+
+    :param sources_dir: The sources directory to look in.
+    :param include_dir: The include directory to look in.
+
+    :returns: A list of recipes, each target being associated with {filename: time stamp}.
+
+    :raises TechnicalError: a recipe failed to compute.
+    """
+    import os
+    import subprocess
+
+    from .constants             import extensions
+    from .errors                import errors
+    from .errors.exceptions     import TechnicalError
+    from .system.file_utilities import get_files
+
+    output = ''
+    preproc_command = ['g++', '-I', include_dir, '-MM']
+    recipes = {}
+
+    for file in get_files(sources_dir, extensions.SOURCES):
         try:
             output = subprocess.run([*preproc_command, file], stdout=subprocess.PIPE, check=True)
         except subprocess.CalledProcessError as error:
@@ -144,21 +180,7 @@ def _get_files_to_recompile(config):
 
         recipes[target] = {source: os.path.getmtime(source) for source in prerequisites}
 
-    to_compile = set()
-
-    for obj, file_timestamp in recipes.items():
-        # Case 1: new targets.
-        if obj not in obj_timestamp:
-            to_compile.update(file_timestamp.keys())
-        # Case 2: modified source files.
-        else:
-            for file, timestamp in file_timestamp.items():
-                if timestamp > obj_timestamp[obj]:
-                    to_compile.add(file)
-
-    to_compile = set(file for file in to_compile if file.endswith('.cpp'))
-
-    return to_compile
+    return recipes
 
 ####################################################################################################
 

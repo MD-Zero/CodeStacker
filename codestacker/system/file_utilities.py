@@ -7,12 +7,12 @@ File utilities.
 
 ####################################################################################################
 
-def get_files(directory, extension):
+def get_files(directory, extensions):
     """
-    Browse a directory and descendants, and gather all files ending with a given extension.
+    Browse a directory and descendants, and gather all files ending with given extensions.
 
     :param directory: The directory to start visiting from.
-    :param extension: The extension to look for in the directory and descendants.
+    :param extensions: The extensions to look for in the directory and descendants.
 
     :returns: A list of filenames / paths.
     """
@@ -22,19 +22,19 @@ def get_files(directory, extension):
 
     for current_dir, _, files in os.walk(directory):
         for file in files:
-            if file.endswith(extension):
+            if file.endswith(extensions):
                 all_files.append(os.path.join(current_dir, file))
 
     return all_files
 
 ####################################################################################################
 
-def check_files(directory, extension):
+def check_files(directory, extensions):
     """
     Check the validity of any source files within directory and descendants.
 
     :param directory: The directory to start visiting from.
-    :param extension: The extension to look for in the directory and descendants.
+    :param extensions: The extensions to look for in the directory and descendants.
 
     :raises FileSystemError: a file doesn't match the naming requirements.
     """
@@ -48,5 +48,5 @@ def check_files(directory, extension):
 
     for _, _, files in os.walk(directory):
         for file in files:
-            if (file.endswith(extension)) and (pattern.search(os.path.splitext(file)[0]) is None):
+            if file.endswith(extensions) and (pattern.search(os.path.splitext(file)[0]) is None):
                 raise FileSystemError(E.INVALID_FILENAME, file)
