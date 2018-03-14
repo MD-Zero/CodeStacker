@@ -44,8 +44,11 @@ def main():
             clean(config)
     except Error as error:
         error.print()
+        Logger.abort('Aborting')
     except KeyboardInterrupt:
         print()
         Logger.error('Keyboard interruption: stopping')
     except BaseException:
         traceback.print_exc()
+    else:
+        Logger.close('End of script')
