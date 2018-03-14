@@ -2,13 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Program flow:
-    1. Parse the arguments.
-    2. Load the YAML blueprint file content, and choose a configuration.
-    3. Validate its inner structure.
-    4. Adapt it: set absolute paths in keys.
-    5. Run the wished configuration.
-    6. Quit the program.
+Main script logic.
 """
 
 ####################################################################################################
@@ -25,6 +19,7 @@ def main():
     from .config_inspector.adaptor   import adapt_config
     from .config_inspector.retriever import get_config
     from .config_inspector.validator import validate_config
+    from .constants                  import keys
     from .errors.exceptions          import Error
     from .logger                     import Logger
 
@@ -36,7 +31,7 @@ def main():
         validate_config(config)
         adapt_config(config)
 
-        command = config['_command']
+        command = config[keys.COMMAND]
 
         if command == 'build':
             build(config)
@@ -47,7 +42,7 @@ def main():
         Logger.abort('Aborting')
     except KeyboardInterrupt:
         print()
-        Logger.error('Keyboard interruption: stopping')
+        Logger.abort('Keyboard interruption')
     except BaseException:
         traceback.print_exc()
     else:

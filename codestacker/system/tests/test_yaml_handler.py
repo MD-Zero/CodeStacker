@@ -20,36 +20,39 @@ class TestYamlHandler(unittest.TestCase):
         current_dir = os.path.dirname(__file__)
 
         self.blueprint_good = os.path.join(current_dir, 'resources/blueprint_good.yaml')
-        self.blueprint_nonexistent = os.path.join(current_dir, 'resources/#dummy123.yaml')
-        self.blueprint_bad = os.path.join(current_dir, 'resources/blueprint_bad.yaml')
+        self.blueprint_nonexistent = os.path.join(current_dir, 'resources/#dummy#.yaml')
+        self.blueprint_ill_formed = os.path.join(current_dir, 'resources/blueprint_ill_formed.yaml')
         self.blueprint_empty = os.path.join(current_dir, 'resources/blueprint_empty.yaml')
 
     def test_all_cases(self):
         """Test all blueprints."""
-        from codestacker.errors              import errors as E
+        from codestacker.errors              import errors
         from codestacker.errors.exceptions   import FileSystemError, TechnicalError
         from codestacker.system.yaml_handler import load_yaml
 
         # Good blueprint.
         load_yaml(self.blueprint_good)
 
-        # Non-existent blueprint.
+        # Bad blueprint: non-existent.
         with self.assertRaises(FileSystemError) as context:
             load_yaml(self.blueprint_nonexistent)
 
-        self.assertEqual(context.exception.args[0], E.FILE_READING)
+        context.exception.print()
+        self.assertEqual(context.exception.args[0], errors.FILE_READING)
 
-        # Bad blueprint.
+        # Bad blueprint: ill-formed YAML.
         with self.assertRaises(TechnicalError) as context:
-            load_yaml(self.blueprint_bad)
+            load_yaml(self.blueprint_ill_formed)
 
-        self.assertEqual(context.exception.args[0], E.YAML_PARSING)
+        context.exception.print()
+        self.assertEqual(context.exception.args[0], errors.YAML_PARSING)
 
-        # Empty blueprint.
+        # Bad blueprint: empty file.
         with self.assertRaises(TechnicalError) as context:
             load_yaml(self.blueprint_empty)
 
-        self.assertEqual(context.exception.args[0], E.EMPTY_YAML)
+        context.exception.print()
+        self.assertEqual(context.exception.args[0], errors.EMPTY_YAML)
 
 ####################################################################################################
 

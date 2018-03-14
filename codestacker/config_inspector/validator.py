@@ -78,7 +78,7 @@ def _check_and_substitute_vars(config):
     import re
 
     from codestacker.errors            import errors
-    from codestacker.errors.exceptions import GraphError, TechnicalError, FunctionalError
+    from codestacker.errors.exceptions import FunctionalError, GraphError, TechnicalError
     from codestacker.graph_tools       import is_directed_acyclic_graph, get_topological_ordering
 
     pattern = re.compile(r'\$(\w+)')

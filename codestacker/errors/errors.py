@@ -17,8 +17,8 @@ YAML_DUMPING = 'YAML dumping error'
 # Configuration inspection errors.
 CONFIG_NOT_FOUND = 'configuration not found'
 
-WRONG_KEY_TYPE = 'key is of incorrect type'
 MISSING_KEY = 'missing mandatory key'
+WRONG_KEY_TYPE = 'key is of incorrect type'
 
 ERROR_VAR_GRAPH = 'error in variables references'
 UNDEFINED_VAR = 'variable is undefined'

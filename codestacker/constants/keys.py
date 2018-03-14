@@ -6,8 +6,8 @@ Configuration keys.
 """
 
 # Special keys.
-ROOT = '_root'
 COMMAND = '_command'
+ROOT = '_root'
 
 # Common keys.
 BINARY = 'binary'

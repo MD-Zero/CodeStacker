@@ -30,7 +30,7 @@ def get_config(arguments):
         raise TechnicalError(errors.CONFIG_NOT_FOUND, arguments['config'])
 
     # Add those special keys to the configuration, for later processing.
-    config[keys.ROOT] = os.path.realpath(os.path.dirname(arguments['file']))
     config[keys.COMMAND] = arguments['command']
+    config[keys.ROOT] = os.path.realpath(os.path.dirname(arguments['file']))
 
     return config

@@ -1,7 +1,0 @@
-default:
-  compiler_options: [-Wall, -Werror, -g, -pedantic-errors
-  dir_bin: bin
-  dir_build: build
-  dir_include: src
-  dir_source: src
-  output: Test

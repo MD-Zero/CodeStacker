@@ -23,13 +23,12 @@ def load_yaml(file):
 
     from codestacker.errors            import errors
     from codestacker.errors.exceptions import FileSystemError, TechnicalError
-    from codestacker.logger import Logger
+    from codestacker.logger            import Logger
 
     Logger.begin('Reading "{}" file...'.format(os.path.relpath(file)))
 
     content = []
 
-    # Try to load the file's content.
     try:
         with open(file, 'r') as stream:
             content = list(yaml.safe_load_all(stream))

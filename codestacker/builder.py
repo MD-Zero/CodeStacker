@@ -212,7 +212,7 @@ def _link(config):
 
     # Step 4: libraries.
     if config[keys.LIBRARIES]:
-        linking_command.extend('-l' + x for x in config[keys.LIBRARIES])
+        linking_command.extend('-l' + library for library in config[keys.LIBRARIES])
 
     try:
         subprocess.run(linking_command, stderr=subprocess.PIPE, check=True)

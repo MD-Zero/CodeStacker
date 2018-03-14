@@ -7,10 +7,13 @@ Argument parsing utility.
 
 ####################################################################################################
 
-_FILE_DESC = '''specify the blueprint file to use;
-                if not specified, the file "blueprint.yaml" will be used, if it exists'''
-_CONF_DESC = '''specify the configuration to use;
-                if not specified, the configuration "default" will be used, if it exists'''
+_DEFAULT_FILE = 'blueprint.yaml'
+_DEFAULT_CONFIG = 'default'
+
+_FILE_DESC = '''specify the blueprint file to use; if not specified, the file "{}" will be used, if
+                it exists'''.format(_DEFAULT_FILE)
+_CONF_DESC = '''specify the configuration to use; if not specified, the configuration "{}" will be
+                used, if it exists'''.format(_DEFAULT_CONFIG)
 
 def parse_args():
     """
@@ -26,8 +29,8 @@ def parse_args():
     parser = argparse.ArgumentParser(prog='codestacker')
     sub_parser = parser.add_subparsers(dest='command')
 
-    parser.add_argument('-f', dest='file', default='blueprint.yaml', help=_FILE_DESC)
-    parser.add_argument('-c', dest='config', default='default', help=_CONF_DESC)
+    parser.add_argument('-f', dest='file', default=_DEFAULT_FILE, help=_FILE_DESC)
+    parser.add_argument('-c', dest='config', default=_DEFAULT_CONFIG, help=_CONF_DESC)
 
     # 'clean' argument.
     sub_parser.add_parser('clean', help='clean the compilation results')

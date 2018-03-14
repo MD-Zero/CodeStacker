@@ -29,7 +29,7 @@ class Error(Exception):
         Logger.error('{}: {}'.format(self.__class__.__name__, message))
 
         if error is not None:
-            print(error.rstrip('\n'))
+            print(str(error).rstrip('\n'))
 
 ####################################################################################################
 

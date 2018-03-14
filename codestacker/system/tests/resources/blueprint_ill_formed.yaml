@@ -1,5 +1,5 @@
 config:
-  key1: [a, b, c]
+  key1: [a, b, c
   key2: abc
   key3:
     foo: foo
