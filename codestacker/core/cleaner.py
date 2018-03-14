@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Code cleaner: erase compilation results.
+Erase compilation results.
 """
 
 ####################################################################################################
@@ -11,8 +11,8 @@ def clean(config):
     """
     Clean any compilation results.
     """
-    from .constants import keys
-    from .logger    import Logger
+    from codestacker.constants import keys
+    from codestacker.logger    import Logger
 
     Logger.begin('Cleaning-up...')
 
@@ -39,9 +39,9 @@ def _remove_files(directory, root):
     import os
     import shutil
 
-    from .errors            import errors
-    from .errors.exceptions import TechnicalError
-    from .logger            import Logger
+    from codestacker.errors            import errors
+    from codestacker.errors.exceptions import TechnicalError
+    from codestacker.logger            import Logger
 
     with os.scandir(directory) as entries:
         for entry in entries:

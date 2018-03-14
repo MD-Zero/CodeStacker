@@ -14,12 +14,12 @@ def main():
     import traceback
 
     from .args_parser                import parse_args
-    from .builder                    import build
-    from .cleaner                    import clean
     from .config_inspector.adaptor   import adapt_config
     from .config_inspector.retriever import get_config
     from .config_inspector.validator import validate_config
     from .constants                  import keys
+    from .core.builder               import build
+    from .core.cleaner               import clean
     from .errors.exceptions          import Error
     from .logger                     import Logger
 

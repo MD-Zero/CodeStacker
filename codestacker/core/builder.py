@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Code builder: compilation + linking.
+Compilation + linking.
 """
 
 ####################################################################################################
@@ -13,7 +13,7 @@ def build(config):
 
     :param config: The configuration to operate on.
     """
-    from .logger import Logger
+    from codestacker.logger import Logger
 
     Logger.begin('Start build')
 
@@ -31,9 +31,9 @@ def _validate_sources(config):
 
     :param config: The configuration to operate on.
     """
-    from .constants             import keys, extensions
-    from .logger                import Logger
-    from .system.file_utilities import check_files
+    from codestacker.constants             import keys, extensions
+    from codestacker.logger                import Logger
+    from codestacker.system.file_utilities import check_files
 
     Logger.begin('Checking headers and sources...')
 
@@ -58,12 +58,13 @@ def _compile(config):
     import re
     import subprocess
 
-    from .constants         import keys, extensions
-    from .errors            import errors
-    from .errors.exceptions import TechnicalError
-    from .logger            import Logger
+    from .helpers                      import get_files_to_recompile
+    from codestacker.constants         import keys, extensions
+    from codestacker.errors            import errors
+    from codestacker.errors.exceptions import TechnicalError
+    from codestacker.logger            import Logger
 
-    files_to_compile = _get_files_to_recompile(config)
+    files_to_compile = get_files_to_recompile(config)
 
     if not files_to_compile:
         Logger.info('Nothing to (re)compile')
@@ -106,84 +107,6 @@ def _compile(config):
 
 ####################################################################################################
 
-def _get_files_to_recompile(config):
-    """
-    Return a list of source files that, given the existing object files in the "build" folder, need
-    to be (re)compiled.
-
-    :param config: The configuration to operate on.
-
-    :returns: A list of files to recompile.
-
-    :raises TechnicalError: a recipe failed to be computed.
-    """
-    import os
-
-    from .constants             import keys, extensions
-    from .system.file_utilities import get_files
-
-    obj_timestamp = {}
-
-    for file in get_files(config[keys.BUILD], '.o'):
-        obj_timestamp[os.path.basename(file)] = os.path.getmtime(file)
-
-    to_compile = set()
-
-    for obj, file_timestamp in _get_recipes(config[keys.SOURCES], config[keys.INCLUDE]).items():
-        # Case 1: new targets.
-        if obj not in obj_timestamp:
-            to_compile.update(file_timestamp.keys())
-        # Case 2: modified source files.
-        else:
-            for file, timestamp in file_timestamp.items():
-                if timestamp > obj_timestamp[obj]:
-                    to_compile.add(file)
-
-    to_compile = set(file for file in to_compile if file.endswith(extensions.SOURCES))
-
-    return to_compile
-
-####################################################################################################
-
-def _get_recipes(sources_dir, include_dir):
-    """
-    Get all recipes needed to (re)compute the dependencies.
-
-    :param sources_dir: The sources directory to look in.
-    :param include_dir: The include directory to look in.
-
-    :returns: A list of recipes, each target being associated with {filename: time stamp}.
-
-    :raises TechnicalError: a recipe failed to compute.
-    """
-    import os
-    import subprocess
-
-    from .constants             import extensions
-    from .errors                import errors
-    from .errors.exceptions     import TechnicalError
-    from .system.file_utilities import get_files
-
-    output = ''
-    preproc_command = ['g++', '-I', include_dir, '-MM']
-    recipes = {}
-
-    for file in get_files(sources_dir, extensions.SOURCES):
-        try:
-            output = subprocess.run([*preproc_command, file], stdout=subprocess.PIPE, check=True)
-        except subprocess.CalledProcessError as error:
-            raise TechnicalError(errors.RECIPE_FAILED, error.stderr.decode('UTF-8'))
-
-        target, prerequisites = output.stdout.decode('UTF-8').split(':', 1)
-
-        prerequisites = prerequisites.replace('\\', '').split()
-
-        recipes[target] = {source: os.path.getmtime(source) for source in prerequisites}
-
-    return recipes
-
-####################################################################################################
-
 def _link(config):
     """
     Link the object files into an executable.
@@ -195,11 +118,11 @@ def _link(config):
     import os
     import subprocess
 
-    from .constants             import keys
-    from .errors                import errors
-    from .errors.exceptions     import TechnicalError
-    from .logger                import Logger
-    from .system.file_utilities import get_files
+    from codestacker.constants             import keys
+    from codestacker.errors                import errors
+    from codestacker.errors.exceptions     import TechnicalError
+    from codestacker.logger                import Logger
+    from codestacker.system.file_utilities import get_files
 
     Logger.begin('Linking')
 
