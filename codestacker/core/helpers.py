@@ -23,24 +23,21 @@ def get_files_to_recompile(config):
     from codestacker.constants             import keys, extensions
     from codestacker.system.file_utilities import get_files
 
-    obj_timestamp = {}
-
-    for file in get_files(config[keys.BUILD], '.o'):
-        obj_timestamp[os.path.basename(file)] = os.path.getmtime(file)
-
+    # Dereferenced for performance.
+    build_dir = config[keys.BUILD]
     to_compile = set()
 
-    for obj, file_timestamp in _get_recipes(config[keys.SOURCES], config[keys.INCLUDE]).items():
+    for target, prerequisites in _get_recipes(config[keys.SOURCES], config[keys.INCLUDE]).items():
         # Case 1: new targets.
-        if obj not in obj_timestamp:
-            to_compile.update(file_timestamp.keys())
+        if target not in [os.path.basename(x) for x in get_files(build_dir, '.o')]:
+            to_compile.update(prerequisites)
         # Case 2: modified source files.
         else:
-            for file, timestamp in file_timestamp.items():
-                if timestamp > obj_timestamp[obj]:
+            for file in prerequisites:
+                if os.path.getmtime(file) > os.path.getmtime(os.path.join(build_dir, target)):
                     to_compile.add(file)
 
-    to_compile = set(file for file in to_compile if file.endswith(extensions.SOURCES))
+    to_compile = set(x for x in to_compile if x.endswith(extensions.SOURCES))
 
     return to_compile
 
@@ -57,7 +54,6 @@ def _get_recipes(sources_dir, include_dir):
 
     :raises TechnicalError: a recipe failed to compute.
     """
-    import os
     import subprocess
 
     from codestacker.constants             import extensions
@@ -77,8 +73,6 @@ def _get_recipes(sources_dir, include_dir):
 
         target, prerequisites = output.stdout.decode('UTF-8').split(':', 1)
 
-        prerequisites = prerequisites.replace('\\', '').split()
-
-        recipes[target] = {source: os.path.getmtime(source) for source in prerequisites}
+        recipes[target] = prerequisites.replace('\\', '').split()
 
     return recipes
