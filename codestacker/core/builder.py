@@ -149,6 +149,6 @@ def _link(config, verbose):
 
         subprocess.run(linking_command, stderr=subprocess.PIPE, check=True)
     except subprocess.CalledProcessError as error:
-        raise TechnicalError(errors.LINKING_FAILED, error.stderr.decode('UTF-8'))
+        raise TechnicalError(errors.LINKING_FAILED, error=error.stderr.decode('UTF-8'))
 
     Logger.end('Success')

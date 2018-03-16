@@ -69,7 +69,7 @@ def _get_recipes(sources_dir, include_dir):
         try:
             output = subprocess.run([*preproc_command, file], stdout=subprocess.PIPE, check=True)
         except subprocess.CalledProcessError as error:
-            raise TechnicalError(errors.RECIPE_FAILED, error.stderr.decode('UTF-8'))
+            raise TechnicalError(errors.RECIPE_FAILED, error=error.stderr.decode('UTF-8'))
 
         target, prerequisites = output.stdout.decode('UTF-8').split(':', 1)
 
