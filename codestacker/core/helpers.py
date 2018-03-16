@@ -15,8 +15,6 @@ def get_files_to_recompile(config):
     :param config: The configuration to operate on.
 
     :returns: A list of files to recompile.
-
-    :raises TechnicalError: a recipe failed to be computed.
     """
     import os
 
@@ -45,12 +43,12 @@ def get_files_to_recompile(config):
 
 def _get_recipes(sources_dir, include_dir):
     """
-    Get all recipes needed to (re)compute the dependencies.
+    Get a list of recipes needed to (re)compute the dependencies.
 
     :param sources_dir: The sources directory to look in.
     :param include_dir: The include directory to look in.
 
-    :returns: A list of recipes, each target being associated with {filename: time stamp}.
+    :returns: A list of recipes.
 
     :raises TechnicalError: a recipe failed to compute.
     """

@@ -119,7 +119,7 @@ def _link(config, verbose):
     :param config: The configuration to operate on.
     :param verbose: The boolean flag to output linking command.
 
-    :raises TechnicalError: a file linking failed.
+    :raises TechnicalError: the linking command failed.
     """
     import os
     import subprocess
