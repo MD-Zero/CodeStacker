@@ -19,7 +19,7 @@ def adapt_config(config):
     # Dereferenced for performance.
     root = config[keys.ROOT]
 
-    Logger.begin('Adapting configuration keys...')
+    Logger.info('Adapt configuration keys')
 
     _adapt_path(root, config, keys.INCLUDE)
     _adapt_path(root, config, keys.SOURCES)
@@ -29,8 +29,6 @@ def adapt_config(config):
 
     _turn_into_set(config, keys.FLAGS)
     _turn_into_set(config, keys.LIBRARIES)
-
-    Logger.end('Done')
 
 ####################################################################################################
 

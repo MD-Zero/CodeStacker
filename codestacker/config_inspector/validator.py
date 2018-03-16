@@ -15,12 +15,10 @@ def validate_config(config):
     """
     from codestacker.logger import Logger
 
-    Logger.begin('Checking configuration...')
+    Logger.info('Check configuration')
 
     _check_keys(config)
     _check_and_substitute_vars(config)
-
-    Logger.end('Configuration valid')
 
 ####################################################################################################
 

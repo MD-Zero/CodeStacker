@@ -25,7 +25,7 @@ def load_yaml(file):
     from codestacker.errors.exceptions import FileSystemError, TechnicalError
     from codestacker.logger            import Logger
 
-    Logger.begin('Reading "{}" file...'.format(os.path.relpath(file)))
+    Logger.begin('Load "{}" file...'.format(os.path.relpath(file)))
 
     content = []
 

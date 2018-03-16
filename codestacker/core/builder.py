@@ -15,7 +15,7 @@ def build(config, verbose):
     """
     from codestacker.logger import Logger
 
-    Logger.begin('Start build')
+    Logger.begin('Building...')
 
     _validate_sources(config)
 
@@ -70,7 +70,7 @@ def _compile(config, verbose):
         Logger.info('Nothing to (re)compile')
         return
 
-    Logger.begin('Compilation')
+    Logger.begin('Compilation...')
 
     # Step 1: compiler.
     compile_command = ['g++']
@@ -88,7 +88,7 @@ def _compile(config, verbose):
     pattern = re.compile(r'(' + r'|'.join([re.escape(x) for x in extensions.SOURCES]) + r')$')
 
     for file in files_to_compile:
-        Logger.info('Compiling {}...'.format(os.path.relpath(file, config[keys.ROOT])))
+        Logger.info('Compiling {}'.format(os.path.relpath(file, config[keys.ROOT])))
 
         # Step 4: source file to compile.
         file_to_compile = ['-c', file]
@@ -108,7 +108,7 @@ def _compile(config, verbose):
         except subprocess.CalledProcessError as error:
             raise TechnicalError(errors.COMPILATION_FAILED, error=error.stderr.decode('UTF-8'))
 
-    Logger.end('Compilation successful')
+    Logger.end('Success')
 
 ####################################################################################################
 
@@ -130,7 +130,7 @@ def _link(config, verbose):
     from codestacker.logger                import Logger
     from codestacker.system.file_utilities import get_files
 
-    Logger.begin('Linking')
+    Logger.begin('Linking...')
 
     # Step 1: compiler.
     linking_command = ['g++']
@@ -151,4 +151,4 @@ def _link(config, verbose):
     except subprocess.CalledProcessError as error:
         raise TechnicalError(errors.LINKING_FAILED, error.stderr.decode('UTF-8'))
 
-    Logger.end('Linking successful')
+    Logger.end('Success')
