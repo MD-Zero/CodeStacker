@@ -32,5 +32,6 @@ def get_config(arguments):
     # Add those special keys to the configuration, for later processing.
     config[keys.COMMAND] = arguments['command']
     config[keys.ROOT] = os.path.realpath(os.path.dirname(arguments['file']))
+    config[keys.VERBOSE] = arguments['verbose']
 
     return config

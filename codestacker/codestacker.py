@@ -32,9 +32,10 @@ def main():
         adapt_config(config)
 
         command = config[keys.COMMAND]
+        verbose = config[keys.VERBOSE]
 
         if command == 'build':
-            build(config)
+            build(config, verbose)
         elif command == 'clean':
             clean(config)
     except Error as error:

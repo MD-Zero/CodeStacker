@@ -8,6 +8,7 @@ Configuration keys.
 # Special keys.
 COMMAND = '_command'
 ROOT = '_root'
+VERBOSE = '_verbose'
 
 # Common keys.
 BINARY = 'binary'

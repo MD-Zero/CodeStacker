@@ -14,6 +14,7 @@ _FILE_DESC = '''specify the blueprint file to use; if not specified, the file "{
                 it exists'''.format(_DEFAULT_FILE)
 _CONF_DESC = '''specify the configuration to use; if not specified, the configuration "{}" will be
                 used, if it exists'''.format(_DEFAULT_CONFIG)
+_VERB_DESC = '''print more details about what the script is doing.'''
 
 def parse_args():
     """
@@ -31,6 +32,7 @@ def parse_args():
 
     parser.add_argument('-f', dest='file', default=_DEFAULT_FILE, help=_FILE_DESC)
     parser.add_argument('-c', dest='config', default=_DEFAULT_CONFIG, help=_CONF_DESC)
+    parser.add_argument('-v', dest='verbose', action='store_true', help=_VERB_DESC)
 
     # 'clean' argument.
     sub_parser.add_parser('clean', help='clean the compilation results')

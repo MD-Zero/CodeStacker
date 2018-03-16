@@ -7,7 +7,7 @@ Compilation + linking.
 
 ####################################################################################################
 
-def build(config):
+def build(config, verbose):
     """
     Build the project (compile + link).
 
@@ -18,10 +18,11 @@ def build(config):
     Logger.begin('Start build')
 
     _validate_sources(config)
-    _compile(config)
-    _link(config)
 
-    Logger.end('Build successful')
+    _compile(config, verbose)
+    _link(config, verbose)
+
+    Logger.end('Done')
 
 ####################################################################################################
 
@@ -35,22 +36,21 @@ def _validate_sources(config):
     from codestacker.logger                import Logger
     from codestacker.system.file_utilities import check_files
 
-    Logger.begin('Checking headers and sources...')
+    Logger.info('Check headers and sources')
 
     check_files(config[keys.INCLUDE], extensions.HEADERS)
     check_files(config[keys.SOURCES], extensions.SOURCES)
-
-    Logger.end('Headers and sources valid')
 
 ####################################################################################################
 
 _SPECIAL_FLAG = '-fdiagnostics-color=always'
 
-def _compile(config):
+def _compile(config, verbose):
     """
     Compile the source files into object files.
 
     :param config: The configuration to operate on.
+    :param verbose: The boolean flag to output compilation command.
 
     :raises TechnicalError: a source file compilation failed.
     """
@@ -98,8 +98,13 @@ def _compile(config):
         # Step 5: object file to produce.
         file_to_compile.extend(['-o', os.path.join(config[keys.BUILD], target_filename)])
 
+        full_command = [*compile_command, *file_to_compile]
+
         try:
-            subprocess.run([*compile_command, *file_to_compile], stderr=subprocess.PIPE, check=True)
+            if verbose:
+                Logger.info('Execute:\n{}'.format(' '.join(full_command)))
+
+            subprocess.run(full_command, stderr=subprocess.PIPE, check=True)
         except subprocess.CalledProcessError as error:
             raise TechnicalError(errors.COMPILATION_FAILED, error=error.stderr.decode('UTF-8'))
 
@@ -107,11 +112,12 @@ def _compile(config):
 
 ####################################################################################################
 
-def _link(config):
+def _link(config, verbose):
     """
     Link the object files into an executable.
 
     :param config: The configuration to operate on.
+    :param verbose: The boolean flag to output linking command.
 
     :raises TechnicalError: a file linking failed.
     """
@@ -138,6 +144,9 @@ def _link(config):
         linking_command.extend('-l' + library for library in config[keys.LIBRARIES])
 
     try:
+        if verbose:
+            Logger.info('Execute:\n{}'.format(' '.join(linking_command)))
+
         subprocess.run(linking_command, stderr=subprocess.PIPE, check=True)
     except subprocess.CalledProcessError as error:
         raise TechnicalError(errors.LINKING_FAILED, error.stderr.decode('UTF-8'))
