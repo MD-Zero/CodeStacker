@@ -111,9 +111,9 @@ def _compile(config, verbose):
             if verbose:
                 Logger.info('Execute:\n{}'.format(' '.join(full_command)))
 
-            subprocess.run(full_command, stderr=subprocess.PIPE, check=True)
+            subprocess.run(full_command, stderr=subprocess.PIPE, check=True, encoding='UTF-8')
         except subprocess.CalledProcessError as error:
-            raise TechnicalError(errors.COMPILATION_FAILED, error=error.stderr.decode('UTF-8'))
+            raise TechnicalError(errors.COMPILATION_FAILED, error=error.stderr)
 
     Logger.end('Success')
 
@@ -154,8 +154,8 @@ def _link(config, verbose):
         if verbose:
             Logger.info('Execute:\n{}'.format(' '.join(linking_command)))
 
-        subprocess.run(linking_command, stderr=subprocess.PIPE, check=True)
+        subprocess.run(linking_command, stderr=subprocess.PIPE, check=True, encoding='UTF-8')
     except subprocess.CalledProcessError as error:
-        raise TechnicalError(errors.LINKING_FAILED, error=error.stderr.decode('UTF-8'))
+        raise TechnicalError(errors.LINKING_FAILED, error=error.stderr)
 
     Logger.end('Success')

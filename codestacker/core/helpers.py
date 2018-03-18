@@ -59,17 +59,18 @@ def _get_recipes(sources_dir, include_dir):
     from codestacker.errors.exceptions     import TechnicalError
     from codestacker.system.file_utilities import get_files
 
-    output = ''
     preproc_command = ['g++', '-I', include_dir, '-MM']
     recipes = {}
 
     for file in get_files(sources_dir, extensions.SOURCES):
         try:
-            output = subprocess.run([*preproc_command, file], stdout=subprocess.PIPE, check=True)
+            output = subprocess.run(
+                [*preproc_command, file],
+                stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True, encoding='UTF-8')
         except subprocess.CalledProcessError as error:
-            raise TechnicalError(errors.RECIPE_FAILED, error=error.stderr.decode('UTF-8'))
+            raise TechnicalError(errors.RECIPE_FAILED, error=error.stderr)
 
-        target, prerequisites = output.stdout.decode('UTF-8').split(':', 1)
+        target, prerequisites = output.stdout.split(':', 1)
 
         recipes[target] = prerequisites.replace('\\', '').split()
 
