@@ -19,10 +19,10 @@ class TestYamlHandler(unittest.TestCase):
 
         current_dir = os.path.dirname(__file__)
 
-        self.blueprint_good = os.path.join(current_dir, 'resources/blueprint_good.yaml')
-        self.blueprint_nonexistent = os.path.join(current_dir, 'resources/#dummy#.yaml')
-        self.blueprint_ill_formed = os.path.join(current_dir, 'resources/blueprint_ill_formed.yaml')
-        self.blueprint_empty = os.path.join(current_dir, 'resources/blueprint_empty.yaml')
+        self.blueprint_good = os.path.join(current_dir, 'resources', 'blueprint_good.yaml')
+        self.blueprint_nonexistent = os.path.join(current_dir, 'resources', '#dummy#.yaml')
+        self.blueprint_broken = os.path.join(current_dir, 'resources', 'blueprint_broken.yaml')
+        self.blueprint_empty = os.path.join(current_dir, 'resources', 'blueprint_empty.yaml')
 
     def test_all_cases(self):
         """Test all blueprints."""
@@ -42,7 +42,7 @@ class TestYamlHandler(unittest.TestCase):
 
         # Bad blueprint: ill-formed YAML.
         with self.assertRaises(TechnicalError) as context:
-            load_yaml(self.blueprint_ill_formed)
+            load_yaml(self.blueprint_broken)
 
         context.exception.print()
         self.assertEqual(context.exception.args[0], errors.YAML_PARSING_ERROR)

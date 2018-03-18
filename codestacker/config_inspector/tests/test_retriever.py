@@ -18,13 +18,13 @@ class TestRetriever(unittest.TestCase):
         import os
 
         self.arguments_good = {
-            'file': os.path.join(os.path.dirname(__file__), 'resources/blueprint.yaml'),
+            'file': os.path.join(os.path.dirname(__file__), 'resources', 'blueprint.yaml'),
             'command': 'build',
             'config': 'default',
             'verbose': True}
 
         self.arguments_bad = {
-            'file': os.path.join(os.path.dirname(__file__), 'resources/blueprint.yaml'),
+            'file': os.path.join(os.path.dirname(__file__), 'resources', 'blueprint.yaml'),
             'command': 'clean',
             'config': '#dummy#',
             'verbose': False}

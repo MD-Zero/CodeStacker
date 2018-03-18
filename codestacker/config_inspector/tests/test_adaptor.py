@@ -17,9 +17,9 @@ class TestAdaptor(unittest.TestCase):
         """Set up."""
         import os
 
-        self.bin_dir = os.path.join(os.path.dirname(__file__), 'resources/bin')
-        self.build_dir = os.path.join(os.path.dirname(__file__), 'resources/build')
-        self.src_dir = os.path.join(os.path.dirname(__file__), 'resources/src')
+        self.bin_dir = os.path.join(os.path.dirname(__file__), 'resources', 'bin')
+        self.build_dir = os.path.join(os.path.dirname(__file__), 'resources', 'build')
+        self.src_dir = os.path.join(os.path.dirname(__file__), 'resources', 'src')
 
         os.makedirs(self.src_dir)
 
