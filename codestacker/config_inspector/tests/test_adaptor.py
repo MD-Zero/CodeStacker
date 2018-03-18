@@ -61,7 +61,7 @@ class TestAdaptor(unittest.TestCase):
         from codestacker.errors                   import errors
         from codestacker.errors.exceptions        import TechnicalError
 
-        # Good configuration.
+        # Valid configuration.
         adapt_config(self.config_good)
 
         self.assertTrue(os.path.isdir(self.bin_dir))
@@ -70,7 +70,7 @@ class TestAdaptor(unittest.TestCase):
         self.assertTrue(isinstance(self.config_good[keys.FLAGS], set))
         self.assertTrue(isinstance(self.config_good[keys.LIBRARIES], set))
 
-        # Bad configuration: non-existent mandatory directory.
+        # Non-existent mandatory directory.
         with self.assertRaises(TechnicalError) as context:
             adapt_config(self.config_bad)
 

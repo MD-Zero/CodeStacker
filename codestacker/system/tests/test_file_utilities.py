@@ -25,6 +25,7 @@ class TestFileUtilities(unittest.TestCase):
         from codestacker.errors.exceptions     import FileSystemError
         from codestacker.system.file_utilities import check_files
 
+        # Invalid name pattern.
         with self.assertRaises(FileSystemError) as context:
             check_files(self.source_dir, '.cpp')
 

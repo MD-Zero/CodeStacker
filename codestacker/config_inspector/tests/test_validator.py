@@ -66,33 +66,33 @@ class TestValidator(unittest.TestCase):
         from codestacker.errors                     import errors
         from codestacker.errors.exceptions          import FunctionalError
 
-        # Good configuration.
+        # Valid configuration.
         validate_config(self.config_good)
 
         self.assertTrue(self.config_good[keys.SOURCES] == self.config_good[keys.INCLUDE])
 
-        # Bad configuration: missing key.
+        # Missing key.
         with self.assertRaises(FunctionalError) as context:
             validate_config(self.config_missing_key)
 
         context.exception.print()
         self.assertEqual(context.exception.args[0], errors.MISSING_KEY)
 
-        # Bad configuration: wrong key type.
+        # Wrong key type.
         with self.assertRaises(FunctionalError) as context:
             validate_config(self.config_wrong_key_type)
 
         context.exception.print()
         self.assertEqual(context.exception.args[0], errors.WRONG_KEY_TYPE)
 
-        # Bad configuration: undefined variable.
+        # Undefined variable.
         with self.assertRaises(FunctionalError) as context:
             validate_config(self.config_undef_var)
 
         context.exception.print()
         self.assertEqual(context.exception.args[0], errors.UNDEFINED_VAR)
 
-        # Bad configuration: wrong variable type.
+        # Wrong variable type.
         with self.assertRaises(FunctionalError) as context:
             validate_config(self.config_wrong_var_type)
 

@@ -30,24 +30,24 @@ class TestYamlHandler(unittest.TestCase):
         from codestacker.errors.exceptions   import FileSystemError, TechnicalError
         from codestacker.system.yaml_handler import load_yaml
 
-        # Good blueprint.
+        # Valid blueprint.
         load_yaml(self.blueprint_good)
 
-        # Bad blueprint: non-existent.
+        # Non-existent file.
         with self.assertRaises(FileSystemError) as context:
             load_yaml(self.blueprint_nonexistent)
 
         context.exception.print()
         self.assertEqual(context.exception.args[0], errors.FILE_READING_ERROR)
 
-        # Bad blueprint: ill-formed YAML.
+        # Ill-formed YAML.
         with self.assertRaises(TechnicalError) as context:
             load_yaml(self.blueprint_broken)
 
         context.exception.print()
         self.assertEqual(context.exception.args[0], errors.YAML_PARSING_ERROR)
 
-        # Bad blueprint: empty file.
+        # Empty file.
         with self.assertRaises(TechnicalError) as context:
             load_yaml(self.blueprint_empty)
 

@@ -35,10 +35,10 @@ class TestRetriever(unittest.TestCase):
         from codestacker.errors                     import errors
         from codestacker.errors.exceptions          import TechnicalError
 
-        # Good arguments.
+        # Valid arguments.
         get_config(self.arguments_good)
 
-        # Bad arguments: unknown configuration name.
+        # Unknown configuration name.
         with self.assertRaises(TechnicalError) as context:
             get_config(self.arguments_bad)
 
