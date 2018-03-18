@@ -2,5 +2,5 @@
 # -*- coding: utf-8 -*-
 
 """
-Error management.
+Errors and exceptions.
 """

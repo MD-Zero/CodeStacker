@@ -66,12 +66,9 @@ def _adapt_path(root, config, key, should_create=False):
 
 def _turn_into_set(config, key):
     """
-    Turn a configuration key's value into a set.
+    Turn a configuration key's value into a set (only if not "None").
 
     :param config: The configuration to operate on.
     :param key: The key to transform.
     """
-    if key in config:
-        config[key] = set(config[key])
-    else:
-        config[key] = set()
+    config[key] = set() if key not in config else set(config[key])

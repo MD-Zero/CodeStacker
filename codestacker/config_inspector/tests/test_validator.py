@@ -62,11 +62,14 @@ class TestValidator(unittest.TestCase):
     def test_validate_sources(self):
         """Test configuration validity."""
         from codestacker.config_inspector.validator import validate_config
+        from codestacker.constants                  import keys
         from codestacker.errors                     import errors
         from codestacker.errors.exceptions          import FunctionalError
 
         # Good configuration.
         validate_config(self.config_good)
+
+        self.assertTrue(self.config_good[keys.SOURCES] == self.config_good[keys.INCLUDE])
 
         # Bad configuration: missing key.
         with self.assertRaises(FunctionalError) as context:

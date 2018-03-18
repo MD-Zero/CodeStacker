@@ -147,8 +147,7 @@ def _link(config, verbose):
     linking_command.extend(get_files(config[keys.BUILD], '.o'))
 
     # Step 4: libraries.
-    if config[keys.LIBRARIES]:
-        linking_command.extend('-l' + library for library in config[keys.LIBRARIES])
+    linking_command.extend('-l' + x for x in config[keys.LIBRARIES])
 
     try:
         if verbose:

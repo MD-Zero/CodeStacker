@@ -25,9 +25,6 @@ def clean(config):
     # Clean-up "bin" directory.
     _remove_files(config[keys.BINARY], root)
 
-    # Clean-up "*.gch" precompiled header files.
-    # _remove_files(config[keys.SOURCES], root, '.gch')
-
     Logger.end('Clean-up successful')
 
 ####################################################################################################
