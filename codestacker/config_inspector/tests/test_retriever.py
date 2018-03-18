@@ -20,12 +20,14 @@ class TestRetriever(unittest.TestCase):
         self.arguments_good = {
             'file': os.path.join(os.path.dirname(__file__), 'resources/blueprint.yaml'),
             'command': 'build',
-            'config': 'default'}
+            'config': 'default',
+            'verbose': True}
 
         self.arguments_bad = {
             'file': os.path.join(os.path.dirname(__file__), 'resources/blueprint.yaml'),
             'command': 'clean',
-            'config': '#dummy#'}
+            'config': '#dummy#',
+            'verbose': False}
 
     def test_get_config(self):
         """Test configuration retrieval mechanism."""
