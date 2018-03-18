@@ -38,14 +38,14 @@ class TestYamlHandler(unittest.TestCase):
             load_yaml(self.blueprint_nonexistent)
 
         context.exception.print()
-        self.assertEqual(context.exception.args[0], errors.FILE_READING)
+        self.assertEqual(context.exception.args[0], errors.FILE_READING_ERROR)
 
         # Bad blueprint: ill-formed YAML.
         with self.assertRaises(TechnicalError) as context:
             load_yaml(self.blueprint_ill_formed)
 
         context.exception.print()
-        self.assertEqual(context.exception.args[0], errors.YAML_PARSING)
+        self.assertEqual(context.exception.args[0], errors.YAML_PARSING_ERROR)
 
         # Bad blueprint: empty file.
         with self.assertRaises(TechnicalError) as context:

@@ -76,7 +76,7 @@ def _check_and_substitute_vars(config):
     import re
 
     from codestacker.errors            import errors
-    from codestacker.errors.exceptions import FunctionalError, GraphError, TechnicalError
+    from codestacker.errors.exceptions import FunctionalError, GraphError
     from codestacker.graph_tools       import is_directed_acyclic_graph, get_topological_ordering
 
     pattern = re.compile(r'\$(\w+)')
@@ -105,7 +105,7 @@ def _check_and_substitute_vars(config):
     try:
         is_directed_acyclic_graph(all_vars)
     except GraphError as error:
-        raise TechnicalError(errors.ERROR_VAR_GRAPH, error.args[0])
+        raise FunctionalError(errors.VAR_GRAPH_ERROR, error.args[0])
 
     # Based on their topological ordering, proceed with the substitutions.
     for var in get_topological_ordering(all_vars):

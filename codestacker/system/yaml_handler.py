@@ -27,15 +27,13 @@ def load_yaml(file):
 
     Logger.begin('Load "{}" file...'.format(os.path.relpath(file)))
 
-    content = []
-
     try:
         with open(file, 'r') as stream:
             content = list(yaml.safe_load_all(stream))
     except IOError as error:
-        raise FileSystemError(errors.FILE_READING, error=error)
+        raise FileSystemError(errors.FILE_READING_ERROR, error=error)
     except yaml.YAMLError as error:
-        raise TechnicalError(errors.YAML_PARSING, error=error)
+        raise TechnicalError(errors.YAML_PARSING_ERROR, error=error)
 
     if not content:
         raise TechnicalError(errors.EMPTY_YAML)
@@ -65,6 +63,6 @@ def dump_yaml(content, file):
         with open(file, 'w') as stream:
             yaml.safe_dump(content, stream, default_flow_style=False)
     except IOError as error:
-        TechnicalError(errors.FILE_WRITING, error).print()
+        TechnicalError(errors.FILE_WRITING_ERROR, error).print()
     except yaml.YAMLError as error:
-        TechnicalError(errors.YAML_DUMPING, error).print()
+        TechnicalError(errors.YAML_DUMPING_ERROR, error).print()

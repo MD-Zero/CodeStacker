@@ -6,13 +6,13 @@ Errors list.
 """
 
 # File handling errors.
-FILE_READING = 'file reading error'
-YAML_PARSING = 'YAML parsing error'
+FILE_READING_ERROR = 'file reading error'
+YAML_PARSING_ERROR = 'YAML parsing error'
 
 EMPTY_YAML = 'empty YAML file'
 
-FILE_WRITING = 'file writing error'
-YAML_DUMPING = 'YAML dumping error'
+FILE_WRITING_ERROR = 'file writing error'
+YAML_DUMPING_ERROR = 'YAML dumping error'
 
 # Configuration inspection errors.
 CONFIG_NOT_FOUND = 'configuration not found'
@@ -20,7 +20,7 @@ CONFIG_NOT_FOUND = 'configuration not found'
 MISSING_KEY = 'missing mandatory key'
 WRONG_KEY_TYPE = 'key is of incorrect type'
 
-ERROR_VAR_GRAPH = 'error in variables references'
+VAR_GRAPH_ERROR = 'error in variables references'
 UNDEFINED_VAR = 'variable is undefined'
 WRONG_VAR_TYPE = 'variable is not of type "str"'
 
