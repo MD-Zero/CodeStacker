@@ -34,6 +34,8 @@ GRAPH_TOO_DEEP = 'depth threshold exceeded'
 INVALID_FILENAME = 'file doesn\'t match filenames requirements'
 
 # Build / link errors.
+INVALID_OUTPUT_NAME = 'invalid output name'
+
 COMPILATION_FAILED = 'compilation failed'
 LINKING_FAILED = 'linking failed'
 RECIPE_FAILED = 'recipe creation failed'

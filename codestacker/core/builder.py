@@ -17,7 +17,7 @@ def build(config, verbose):
 
     Logger.begin('Building...')
 
-    _validate_sources(config)
+    _check_prerequisites(config)
 
     _compile(config, verbose)
     _link(config, verbose)
@@ -26,13 +26,17 @@ def build(config, verbose):
 
 ####################################################################################################
 
-def _validate_sources(config):
+def _check_prerequisites(config):
     """
     Check if headers and sources filenames are valid.
 
     :param config: The configuration to operate on.
     """
+    import re
+
     from codestacker.constants             import keys, extensions
+    from codestacker.errors                import errors
+    from codestacker.errors.exceptions     import FunctionalError
     from codestacker.logger                import Logger
     from codestacker.system.file_utilities import check_files
 
@@ -40,6 +44,9 @@ def _validate_sources(config):
 
     check_files(config[keys.INCLUDE], extensions.HEADERS)
     check_files(config[keys.SOURCES], extensions.SOURCES)
+
+    if re.search(r'^\w+$', config[keys.OUTPUT]) is None:
+        raise FunctionalError(errors.INVALID_OUTPUT_NAME)
 
 ####################################################################################################
 
