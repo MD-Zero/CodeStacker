@@ -1,17 +1,21 @@
 
-<h1 style="text-align:center">CodeStacker (CS)</h1>
-<p style="text-align:center">A Python build system for C++ projects.</p>
+# CodeStacker (CS) #
+
+A Python build system for C++ projects.
 
 ## Features ##
+
 - Simple and straightforward YAML configuration file ("blueprint")
 - Recompile only what needs to be
 - No garbage produced, only object files and binaries
 
 ## Prerequisites ##
+
 CS requires to have Python3 to be installed. Any subsequent
 dependencies will be installed by pip3.
 
 ## Installing ##
+
 From this repository:
 ```sh
 $ git clone https://github.com/MD-Zero/CodeStacker.git
@@ -20,6 +24,7 @@ $ pip3 install --user --upgrade .
 ```
 
 ## Usages ##
+
 Once installed with pip, CS is available through the command line:
 ```sh
 $ codestacker build
@@ -30,6 +35,7 @@ $ codestacker -v clean
 ```
 
 ## Blueprint grammar ##
+
 The **blueprint file** is a file defining **one or several strategies** for CS
 to **carry out a build**. Written using the YAML markup language, it follows a
 certain structure which needs to be respected for CS to understand what needs to
@@ -52,9 +58,10 @@ default:
 ```
 
 ### Structure ###
+
 A blueprint can specify any number of YAML _document_, identified by the
 enclosing `---` and `...` markers.<br/>CS **doesn't really mind**, as it will
-read all those documents at once and load them in memory.<br/>**Be careful**
+read all those documents at once and load them in memory—**be careful** though
 when defining several documents with the same structure: **only the last one**
 in the file will be used!
 
