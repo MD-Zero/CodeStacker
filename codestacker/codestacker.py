@@ -11,6 +11,7 @@ def main():
     """
     Script's main function.
     """
+    import sys
     import traceback
 
     from .args_parser                import parse_args
@@ -41,10 +42,14 @@ def main():
     except Error as error:
         error.print()
         Logger.abort('Aborting')
+        sys.exit(1)
     except KeyboardInterrupt:
         print()
         Logger.abort('Keyboard interruption')
+        sys.exit(1)
     except BaseException:
         traceback.print_exc()
+        sys.exit(1)
     else:
         Logger.close('End of script')
+        sys.exit(0)
